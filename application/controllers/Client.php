@@ -32,7 +32,7 @@ class Client extends CI_Controller {
 			$this->load->library('pagination');
 			$config = [
 				'base_url' => base_url('Client/AllClients'),
-				'per_page' => 1,
+				'per_page' => 5,
 				'total_rows' => $Total,
 			];
 

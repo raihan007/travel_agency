@@ -137,6 +137,28 @@ $config = array (
 								'rules' => 'trim|required',
 						),
 				   ),
+	'PackageInfoForm' => array(
+						array(
+								'field' => 'Title',
+								'label' => 'Title',
+								'rules' => 'trim|required|max_length[100]',
+						),
+						array(
+								'field' => 'Cost',
+								'label' => 'Cost',
+								'rules' => 'trim|required|Is_Float',
+						),
+						array(
+								'field' => 'Type',
+								'label' => 'Type',
+								'rules' => 'trim|required'
+						),
+						array(
+								'field' => 'Details',
+								'label' => 'Details',
+								'rules' => 'trim|required'
+						),
+					),
 	'ChangePasswordForm' => array(
 						array(
 								'field' => 'OldPassword',

@@ -42,7 +42,7 @@
 		</tr>
 		<tr>
 			<td class="menu">
-				<a href="/travel_agency/Tour/Add">Add New Tour Packages</a>
+				<a href="/travel_agency/Packages/Add">Add New Tour Packages</a>
 			</td>
 		</tr>
 		<tr>

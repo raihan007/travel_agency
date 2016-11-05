@@ -7,6 +7,23 @@ class MY_Form_validation extends CI_Form_validation {
         $this->CI =& get_instance();
     }
 
+    //Start of validation extended methods
+    function Is_Float($value) 
+    {        
+        $result = preg_match('/^-?(?:\d+|\d*\.\d+)$/', $value);
+
+        if($result == 0)
+        {
+            $this->form_validation->set_message('Is_Float', '%s must valid number');
+            $response = false;
+        }
+        else 
+        {
+            $response = true;
+        }
+        return $response;
+    }
+
     public function check_unique($str, $field) {
 
         $field_ar = explode('.', $field);
