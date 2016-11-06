@@ -1,6 +1,6 @@
 <?php $this->load->view('Shared/header_view'); ?>
 	<form method="POST" action="" name="PackageInfoForm" enctype="multipart/form-data">
-		<table style="width: auto;" align="center" >
+		<table style="width: auto;" align="left" >
 			<tr>
 				<td align="center" style="color: red;" colspan="2">
 					<?php echo $message; ?>
@@ -36,6 +36,10 @@
 				<td><input type="text" name="Discount" value="<?= set_value('Discount') ?>"></input></td>
 			</tr>
 			<tr>
+				<td>Last Booking Date</td>
+				<td><input type="text" placeholder="YYYY-MM-DD" name="BookingLastDate" value="<?= set_value('BookingLastDate') ?>"></input></td>
+			</tr>
+			<tr>
 				<td>Photos</td>
 				<td>
 					<input type="file" name="Photos[]" onchange="PackageImages(this)" multiple></input>
@@ -44,7 +48,7 @@
 			</tr>
 			<tr>
 				<td>Details</td>
-				<td><textarea rows="10" cols="21" name="Details" ></textarea></td>
+				<td><textarea rows="10" cols="21" name="Remarks" ><?= set_value('Remarks') ?></textarea></td>
 			</tr>
 			<tr>
 				<td style="text-align: right;" >

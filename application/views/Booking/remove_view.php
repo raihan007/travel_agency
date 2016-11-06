@@ -1,6 +1,6 @@
 <?php $this->load->view('Shared/header_view'); ?>
 	<table border="1" align="center">
-		<tr style="text-align: center;"><td colspan="2"><h2>Package Details</h2></td></tr>
+		<tr style="text-align: center;"><td colspan="2"><h2>Are you sure to delete this package details?</h2></td></tr>
 		<tr>
 			<td style="width: 20%;text-align: right;">Entity No :</td>
 			<td><?= $Package['EntityNo'] ?></td>
@@ -45,8 +45,11 @@
 		</tr>
 		<tr>
 			<td  style="text-align: center;" colspan="2">
-				<a href="/travel_agency/Packages/AllPackages">Back</a>
-				<a href="/travel_agency/Packages/Edit/<?=$Package['EntityNo']?>">Update</a>
+				<form method="POST">
+					<a href="/travel_agency/Packages/AllPackages">Back</a>
+					<input type="hidden" value="<? $Package['EntityNo']?> "></input>
+					<input type="Submit" name="Delete" value="Confirm"></input>
+				</form>
 			</td>
 		</tr>
 	</table>

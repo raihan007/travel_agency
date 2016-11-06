@@ -21,6 +21,20 @@ class ClientModel extends MY_Model {
 		}
 	}
 
+	public function Get_Clients_Name()
+	{
+		$sql = "SELECT UserId,CONCAT(FirstName,' ',LastName) AS 'FullName' FROM users_info ORDER BY EntityNo";
+		$result = $this->db->query($sql);
+		
+		$return = array();
+		if($result->num_rows() > 0) {
+			foreach($result->result_array() as $row) {
+				$return[$row['UserId']] = $row['FullName'];
+			}
+		}
+        return $return;
+	}
+
 	public function Get_By_ID($UserId = '')
 	{
 		$sql = "SELECT users_info.*,users_access.Username,users_access.Password FROM users_info JOIN users_access ON users_info.UserId = users_access.UserId WHERE users_info.UserId='$UserId'";

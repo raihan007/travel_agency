@@ -1,12 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class PackageModel extends MY_Model {
+class BookingModel extends MY_Model {
 	
 	function __construct() {
 		parent::__construct();
 	}
 
-	public function Get_Packages_List($limit = 0, $offset = 0)
+	public function Get_Bookings_List($limit = 0, $offset = 0)
 	{
 		$sql = "SELECT * FROM packages_info WHERE NOT IsDeleted=1 AND BookingLastDate >= NOW() ORDER BY EntityNo LIMIT $limit OFFSET $offset";
 		$result = $this->db->query($sql);
@@ -80,10 +80,10 @@ class PackageModel extends MY_Model {
 		}
 	}
 
-	public function Add_New_Package_Info($PackageData = array())
+	public function Add_New_Booking_Info($BookingData = array())
 	{
-		extract($PackageData);
-		$sql = "INSERT INTO packages_info  VALUES (null,'$ID','$Title',$Gallery,$Cost,'$Type',$Discount,'$Remarks','$BookingLastDate',DEFAULT)";
+		extract($BookingData);
+		$sql = "INSERT INTO packages_booking_info VALUES (null,'$PackageId',$Quantity,$TotalCost,'$ClientId',DEFAULT)";
 		$insert = $this->db->query($sql);
         if($insert){
             return true;

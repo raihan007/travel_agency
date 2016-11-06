@@ -141,7 +141,7 @@ $config = array (
 						array(
 								'field' => 'Title',
 								'label' => 'Title',
-								'rules' => 'trim|required|max_length[100]',
+								'rules' => 'trim|required|alpha_numeric_spaces|max_length[100]',
 						),
 						array(
 								'field' => 'Cost',
@@ -154,8 +154,60 @@ $config = array (
 								'rules' => 'trim|required'
 						),
 						array(
-								'field' => 'Details',
+								'field' => 'Discount',
+								'label' => 'Discount',
+								'rules' => 'trim|required|Is_Float'
+						),
+						array(
+								'field' => 'BookingLastDate',
+								'label' => 'Last date of booking',
+								'rules' => 'trim|required|is_valid_date',
+						),
+						array(
+								'field' => 'Remarks',
 								'label' => 'Details',
+								'rules' => 'trim|required|alpha_numeric_spaces|max_length[1500]'
+						),
+					),
+	'BookingInfoForm' => array(
+						array(
+								'field' => 'EntityNo',
+								'label' => 'Entity No',
+								'rules' => 'trim|required|integer',
+						),
+						array(
+								'field' => 'Cost',
+								'label' => 'Cost',
+								'rules' => 'trim|required|Is_Float',
+						),
+						array(
+								'field' => 'Quantity',
+								'label' => 'Quantity',
+								'rules' => 'trim|required|integer',
+						),
+						array(
+								'field' => 'TotalCost',
+								'label' => 'Total Cost',
+								'rules' => 'trim|required|Is_Float'
+						),
+						array(
+								'field' => 'Discount',
+								'label' => 'Discount',
+								'rules' => 'trim|required|Is_Float'
+						),
+						array(
+								'field' => 'BookingDate',
+								'label' => 'Date of booking',
+								'rules' => 'trim|required|is_valid_date',
+						),
+						array(
+								'field' => 'PackageId',
+								'label' => 'Package',
+								'rules' => 'trim|required'
+						),
+						array(
+								'field' => 'ClientId',
+								'label' => 'Client',
 								'rules' => 'trim|required'
 						),
 					),

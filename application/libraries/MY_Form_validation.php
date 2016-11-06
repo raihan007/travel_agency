@@ -14,7 +14,7 @@ class MY_Form_validation extends CI_Form_validation {
 
         if($result == 0)
         {
-            $this->form_validation->set_message('Is_Float', '%s must valid number');
+            $this->CI->form_validation->set_message('Is_Float', '%s must valid number');
             $response = false;
         }
         else 

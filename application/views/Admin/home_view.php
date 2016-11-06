@@ -37,22 +37,22 @@
 		</tr>
 		<tr>
 			<td class="menu">
-				<a href="/travel_agency/Tour/AllTour">All Tour Package Information</a>
+				<a href="/travel_agency/Packages/AllPackages">All Package Information</a>
 			</td>
 		</tr>
 		<tr>
 			<td class="menu">
-				<a href="/travel_agency/Packages/Add">Add New Tour Packages</a>
+				<a href="/travel_agency/Packages/Add">Add New Packages</a>
 			</td>
 		</tr>
 		<tr>
 			<td class="menu">
-				<a href="/travel_agency/Booking/AllPackages">All Booked Tour Package Information</a>
+				<a href="/travel_agency/Booking/AllPackages">All Bookeding Information</a>
 			</td>
 		</tr>
 		<tr>
 			<td class="menu">
-				<a href="/travel_agency/Booking/Add">Book New Tour Packages</a>
+				<a href="/travel_agency/Booking/Add">Add New Booking</a>
 			</td>
 		</tr>
 		<tr>
