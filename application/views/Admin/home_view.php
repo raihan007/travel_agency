@@ -47,7 +47,7 @@
 		</tr>
 		<tr>
 			<td class="menu">
-				<a href="/travel_agency/Booking/AllPackages">All Bookeding Information</a>
+				<a href="/travel_agency/Booking/AllBooking">All Booking Information</a>
 			</td>
 		</tr>
 		<tr>

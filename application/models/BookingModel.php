@@ -6,9 +6,9 @@ class BookingModel extends MY_Model {
 		parent::__construct();
 	}
 
-	public function Get_Bookings_List($limit = 0, $offset = 0)
+	public function Get_Booking_List($limit = 0, $offset = 0)
 	{
-		$sql = "SELECT * FROM packages_info WHERE NOT IsDeleted=1 AND BookingLastDate >= NOW() ORDER BY EntityNo LIMIT $limit OFFSET $offset";
+		$sql = "SELECT * FROM booking_info_view ORDER BY EntityNo LIMIT $limit OFFSET $offset";
 		$result = $this->db->query($sql);
 		
 		if($result->num_rows() > 0)

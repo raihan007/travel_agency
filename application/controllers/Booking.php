@@ -4,12 +4,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Booking extends CI_Controller {
 
 	function __construct() {
-		
 		parent::__construct();
 		$this->load->model('PackageModel');
 		$this->load->model('ClientModel');
 		$this->load->model('BookingModel');
 		$this->load->library('UniqueKey');
+	}
+
+	public function AllBooking($offset = 0)
+	{
+		$data['title'] = "All Booking Details";
+
+		if($this->session->userdata('UserRole') === 'Admin') {
+
+			$Total = $this->PackageModel->Get_Number_Of_Rows('EntityNo','booking_info_view');
+
+			$this->load->library('pagination');
+			$config = [
+				'base_url' => base_url('Booking/AllBooking'),
+				'per_page' => 5,
+				'total_rows' => $Total,
+			];
+
+
+			$this->pagination->initialize($config);
+				
+			$data['BookingList'] = $this->BookingModel->Get_Booking_List($config['per_page'],$offset);
+			$data['Total'] = $Total;
+
+			$this->load->view('Booking/booking_view',$data);
+		}else{
+			redirect('Home');
+		}
 	}
 
 	public function Add()
