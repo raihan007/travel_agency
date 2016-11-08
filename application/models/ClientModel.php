@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class ClientModel extends MY_Model {
-	
+	private $TableName = 'users_info';
 	function __construct() {
 		parent::__construct();
 	}
@@ -18,6 +18,33 @@ class ClientModel extends MY_Model {
 		else 
 		{
 			return NULL;
+		}
+	}
+
+	public function GET($SearchKey = array(),$perpage = 0, $page = 0)
+	{
+		$page = $page-1;
+		if ($page<0) { 
+			$page = 0;
+		}
+		$from = $page*$perpage;
+
+		$this->db->select();
+		$this->db->from($this->TableName);
+		if (!empty($SearchKey)) {
+			$this->db->like($SearchKey);
+		}
+		$this->db->order_by('EntityNo', 'ASC');
+		$this->db->limit($perpage, $from);
+		$result = $this->db->get();
+		//echo $this->db->last_query();
+		if($result->num_rows() > 0)
+		{
+			return $result->result_array();
+		}
+		else 
+		{
+			return array();
 		}
 	}
 

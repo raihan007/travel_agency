@@ -245,21 +245,16 @@ $config = array (
 								'rules' => 'trim|required|matches[NewUsername]'
 						),
 					),
-	'editpro' => array(
+	'SearchForm' => array(
 						array(
-								'field' => 'name',
-								'label' => 'Name',
-								'rules' => 'required',
+								'field' => 'SearchType',
+								'label' => 'Search Type',
+								'rules' => 'trim|required',
 						),
 						array(
-								'field' => 'price',
-								'label' => 'Price',
-								'rules' => 'required',
-						),
-						array(
-								'field' => 'quantity',
-								'label' => 'Quantity',
-								'rules' => 'required',
+								'field' => 'SearchKey',
+								'label' => 'Search',
+								'rules' => 'trim|required',
 						)
 				   ),
 );

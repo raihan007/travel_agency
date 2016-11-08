@@ -8,6 +8,11 @@ class Client extends CI_Controller {
 		$this->load->library('UniqueKey');
 	}
 
+	public function test()
+	{
+		echo date("Y-m-d H:i:s");
+	}
+
 	public function index()
 	{	
 		$data['title'] = 'Client Panel';
@@ -25,29 +30,51 @@ class Client extends CI_Controller {
 
 	public function AllClients($offset = 0)
 	{
+		$data['message'] = '';
+		$Search = array();
 		if($this->session->userdata('UserRole') === 'Admin') {
-
-			$Total = $this->ClientModel->Get_Number_Of_Rows('EntityNo','users_info');
-
 			$this->load->library('pagination');
-			$config = [
-				'base_url' => base_url('Client/AllClients'),
-				'per_page' => 5,
-				'total_rows' => $Total,
-			];
+			if($this->input->post('Search'))
+			{
+				if($this->form_validation->run('SearchForm'))
+				{
+					$column = $this->input->post('SearchType');
+					$value = $this->input->post('SearchKey');
 
-			$config['next_link'] = '&gt;';
-
-
+					$Search = array(
+						$column => $value
+					);
+				}else{
+					$data['message'] = validation_errors();
+				}
+			}
+			$Total = $this->ClientModel->Get_Total_Rows($Search,'users_info');
+			$config = $this->Config_Pagination('Client/AllClients/',$Total);
 			$this->pagination->initialize($config);
-				
-			$data['ClientList'] = $this->ClientModel->Get_Clients_List($config['per_page'],$offset);
+			$data['ClientList'] = $this->ClientModel->GET($Search,$config['per_page'],$offset);
 			$data['Total'] = $Total;
-
 			$this->load->view('Client/clients_view',$data);
 		}else{
 			redirect('Home');
 		}
+	}
+
+	private function Config_Pagination($BaseUrl='',$Total=''){
+		$config = array();
+		$config = [
+			'suffix' => '?Type='.$_GET['SearchType'].'&&SearchKey='.$_GET['SearchKey'],
+			'base_url' => base_url($BaseUrl),
+			'per_page' => 4,
+			'total_rows' => $Total,
+			'use_page_numbers' => TRUE,
+			'cur_tag_open' => '<b>',
+			'cur_tag_close' => '</b>',
+			'next_link' => 'Next',
+			'prev_link' => 'Previous',
+			'uri_segment' => 3,
+			'page_query_string' => TRUE
+		];
+		return $config;
 	}
 
 	public function Add()

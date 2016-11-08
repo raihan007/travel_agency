@@ -39,6 +39,24 @@ class MY_Model extends CI_Model {
 		return $result->row()->Total;
 	}
 
+	public function Get_Total_Rows($Where=array(),$table = '')
+	{
+		$this->db->select("COUNT(*) as 'Total'");
+		if (!empty($Where)) {
+			$this->db->like($Where);
+		}
+		$result = $this->db->get($table);
+		//echo $this->db->last_query();
+		if($result->num_rows() > 0)
+		{
+			return $result->row()->Total;
+		}
+		else 
+		{
+			return 0;
+		}
+	}
+
 	public function Get_Last_Login_By_ID($UserId = '')
 	{
 		$sql = "SELECT LoginTime FROM access_history WHERE UserId='$UserId' ORDER BY LoginTime DESC LIMIT 1";

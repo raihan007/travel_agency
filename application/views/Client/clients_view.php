@@ -6,6 +6,13 @@
 <body>
 	<table style="text-align: center;" align="center" border="1">
 		<thead>
+            <?php  if($message !== ''): ?>
+            <tr>
+                <td align="center" style="color: red;" colspan="8">
+                    <?php echo $message; ?>
+                </td>
+            </tr>
+            <?php endif; ?>
             <?php  if( $notif = $this->session->flashdata('success')): ?>
             <tr>
                 <td style="color: blue;" colspan="8"><strong><?= $notif ?></strong></td>
@@ -17,7 +24,25 @@
             </tr>
             <?php endif; ?>
 			<tr><td colspan="8"><h2>All Clients List</h2></td></tr>
-			<tr><td style="text-align: left;" colspan="8"><a href="/travel_agency/Client/add">Add New</a></td></tr>
+			<tr>
+                <td style="text-align: left;" colspan="2">
+                    <a href="/travel_agency/Client/add">Add New</a>
+                    <a href="/travel_agency/Admin">Home</a>
+                </td>
+                <td colspan="6">
+                    <form method="GET" name="SearchForm">
+                        <select name="SearchType">
+                            <option value="" selected="">Select Option</option>
+                            <option value="FirstName">First Name</option>
+                            <option value="LastName">Last Name</option>
+                            <option value="Email">Email</option>
+                        </select>
+                        <input type="text" name="SearchKey"></input>
+                        <input type="submit" value="Search" name="Search"></input>
+                        <a href="/travel_agency/Client/AllClients">Clear</a>
+                    </form>
+                </td>
+            </tr>
             <tr>
                 <th>#</th>
                 <th>First Name</th>
@@ -54,8 +79,7 @@
             </tr>
             <?php endif; ?>
             <tr>
-                <td colspan="2"><a href="/travel_agency/Admin">Home</a></td>
-                <td colspan="6"><?= $this->pagination->create_links() ?></td>
+                <td colspan="8"><?= $this->pagination->create_links() ?></td>
             </tr>
         </tbody>
     </table>
