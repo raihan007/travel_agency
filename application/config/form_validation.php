@@ -30,6 +30,11 @@ $config = array (
 								'rules' => 'trim|required|alpha',
 						),
 						array(
+								'field' => 'Gender',
+								'label' => 'Gender',
+								'rules' => 'trim|required',
+						),
+						array(
 								'field' => 'Email',
 								'label' => 'Email',
 								'rules' => 'trim|required|valid_email|check_unique[users_info.Email.EntityNo]',
@@ -65,9 +70,14 @@ $config = array (
 								'rules' => 'trim|required',
 						),
 						array(
+								'field' => 'Type',
+								'label' => 'Type',
+								'rules' => 'trim|required',
+						),
+						array(
 								'field' => 'Username',
 								'label' => 'Username',
-								'rules' => 'trim|required|check_unique[users_access.Username.EntityNo]',
+								'rules' => 'trim|required|min_length[5]|check_unique[users_access.Username.EntityNo]',
 						),
 						array(
 								'field' => 'Password',
@@ -95,6 +105,11 @@ $config = array (
 								'field' => 'LastName',
 								'label' => 'Last Name',
 								'rules' => 'trim|required|alpha',
+						),
+						array(
+								'field' => 'Gender',
+								'label' => 'Gender',
+								'rules' => 'trim|required',
 						),
 						array(
 								'field' => 'Email',
@@ -141,7 +156,7 @@ $config = array (
 						array(
 								'field' => 'Title',
 								'label' => 'Title',
-								'rules' => 'trim|required|alpha_numeric_spaces|max_length[100]',
+								'rules' => 'trim|required|alpha_numeric_spaces|max_length[100]|check_unique[packages_info.Title.EntityNo]',
 						),
 						array(
 								'field' => 'Cost',
@@ -247,8 +262,8 @@ $config = array (
 					),
 	'SearchForm' => array(
 						array(
-								'field' => 'SearchType',
-								'label' => 'Search Type',
+								'field' => 'Type',
+								'label' => 'Search Option',
 								'rules' => 'trim|required',
 						),
 						array(

@@ -20,26 +20,40 @@ class Packages extends CI_Controller {
 		echo time();
 	}
 
+	private function Config_Pagination($BaseUrl='',$Total=''){
+		$config = array();
+		$config = [
+			'base_url' => base_url($BaseUrl),
+			'per_page' => 5,
+			'total_rows' => $Total,
+			'use_page_numbers' => TRUE,
+			'full_tag_open' => '<div id="pagination">',
+			'full_tag_close' => '</div>',
+			'cur_tag_open' => '<b>',
+			'cur_tag_close' => '</b>',
+			'next_link' => 'Next',
+			'prev_link' => 'Previous',
+			'uri_segment' => 3,
+		];
+		return $config;
+	}
+
 	public function AllPackages($offset = 0)
 	{
 		$data['title'] = "All Package Details";
 
-		if($this->session->userdata('UserId')) {
+		if($this->session->userdata('UserRole') === 'Admin') {
 
-			$Total = $this->PackageModel->Get_Number_Of_Rows('EntityNo','Packages_info');
+			$Total = $this->PackageModel->Get_Total_Rows(array(),'packages_info');
 
 			$this->load->library('pagination');
-			$config = [
-				'base_url' => base_url('Packages/AllPackages'),
-				'per_page' => 5,
-				'total_rows' => $Total,
-			];
 
-
+			$config = $this->Config_Pagination('Packages/AllPackages',$Total);
 			$this->pagination->initialize($config);
 				
-			$data['PackageList'] = $this->PackageModel->Get_Packages_List($config['per_page'],$offset);
+			$data['PackageList'] = $this->PackageModel->GET(array(),$config['per_page'],$offset);
 			$data['Total'] = $Total;
+			$data['PerPage'] = $config['per_page'];
 
 			$this->load->view('Package/packages_view',$data);
 		}else{
@@ -112,13 +126,14 @@ class Packages extends CI_Controller {
 				        'Cost' => $this->input->post('Cost'),
 				      	'Type' => $this->input->post('Type'),
 				      	'Discount' => $this->input->post('Discount'),
-				       	'Remarks' => $this->input->post('Remarks')
+				       	'Remarks' => $this->input->post('Remarks'),
+				       	'BookingLastDate' => $this->input->post('BookingLastDate')
 					);
 					$DataStatus = $this->PackageModel->Add_New_Package_info($PackageData);
 
 					//Storing insertion status message.
 			        if($ImageStatus || $DataStatus){
-					    	$this->session->set_flashdata('success', 'Data added successfully created.');
+					    	$this->session->set_flashdata('success', 'Data added successfully.');
 					}else{
 					    	$this->session->set_flashdata('error', 'Some problems occured, please try again.');
 					}
@@ -209,7 +224,7 @@ class Packages extends CI_Controller {
 
 						//Storing insertion status message.
 				        if($ImageStatus || $DataStatus){
-						    	$this->session->set_flashdata('success', 'Data Updated successfully created.');
+						    	$this->session->set_flashdata('success', 'Data Updated successfully.');
 						}else{
 						    	$this->session->set_flashdata('error', 'Some problems occured, please try again.');
 						}

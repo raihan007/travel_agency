@@ -1,53 +1,51 @@
 <?php $this->load->view('Shared/header_view'); ?>
-	<table border="1" align="center">
-		<tr style="text-align: center;"><td colspan="2"><h2>Package Details</h2></td></tr>
-		<tr>
-			<td style="width: 20%;text-align: right;">Entity No :</td>
-			<td><?= $Package['EntityNo'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Title :</td>
-			<td><?= $Package['Title'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Cost :</td>
-			<td><?= $Package['Cost'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Photo :</td>
-			<td>
-				<?php if($Package['Gallery'] == '1'): ?>
-					<?php foreach ($Package['Images'] as $key => $value) :?>
-	                    <img id="Image" height='100' width='100' src="<?php echo base_url('Public/Photos/Packages/'.$value); ?>" />
-	            	<?php endforeach; ?>
-	            	<br/><a href="<?= base_url('Packages/Gallery/'.$Package['EntityNo']) ?>">See Gallery Here</a>
-	            <?php else: ?>
-	            	No Photos Available!
-	            <?php endif; ?>
-			</td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Type :</td>
-			<td><?= $Package['Type'] ?></td>
-		</tr>
-
-		<tr>
-			<td style="text-align: right;">Discount :</td>
-			<td><?= $Package['Discount'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Last Date of Booking :</td>
-			<td><?= $Package['BookingLastDate'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Details :</td>
-			<td><?= $Package['Remarks'] ?></td>
-		</tr>
-		<tr>
-			<td  style="text-align: center;" colspan="2">
-				<a href="/travel_agency/Packages/AllPackages">Back</a>
-				<a href="/travel_agency/Packages/Edit/<?=$Package['EntityNo']?>">Update</a>
-			</td>
-		</tr>
-	</table>
+	<form method="POST" action="" name="BookingInfoForm" enctype="multipart/form-data">
+		<table style="width: auto;" align="center" border="1" >
+			<tr>
+				<td style="text-align: center;" colspan="2"><h2>Package Booking Details</h2></td>
+			</tr>
+			<tr>
+				<td>Entity No.</td>
+				<td><?= $Booking['EntityNo'] ?></td>
+			</tr>
+			<tr>
+				<td>Package</td>
+				<td><?= $Package['Title'] ?></td>
+			</tr>
+			<tr>
+				<td>Tickets Quantity</td>
+				<td><?= $Booking['Quantity'] ?></td>
+			</tr>
+			<tr>
+				<td>Cost</td>
+				<td><?= $Package['Cost'] ?></td>
+			</tr>
+			<tr>
+				<td>Discount</td>
+				<td><?= $Package['Discount'] ?></td>
+			</tr>
+			<tr>
+				<td>Total Cost</td>
+				<td><?= $Booking['TotalCost'] ?></td>
+			</tr>
+			<tr>
+				<td>Booking Date</td>
+				<td><?= $Booking['Date'] ?></td>
+			</tr>
+			<tr>
+				<td>Client</td>
+				<td><?= $Client['FirstName'].' '.$Client['LastName'] ?>
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align: right;" >
+				<a href="/travel_agency/Booking/AllBooking">All Booking List</a>
+				</td>
+				<td>
+					<a href="/travel_agency/Booking/Edit/<?=$Booking['EntityNo']?>">Update</a>
+					<a href="/travel_agency/Admin">Home</a>
+				</td>
+			</tr>
+		</table>
+	</form>
 <?php $this->load->view('Shared/footer_view'); ?>

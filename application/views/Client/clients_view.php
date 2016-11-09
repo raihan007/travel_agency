@@ -25,13 +25,13 @@
             <?php endif; ?>
 			<tr><td colspan="8"><h2>All Clients List</h2></td></tr>
 			<tr>
-                <td style="text-align: left;" colspan="2">
+                <td>
                     <a href="/travel_agency/Client/add">Add New</a>
-                    <a href="/travel_agency/Admin">Home</a>
                 </td>
+                <td><a href="/travel_agency/Admin">Home</a></td>
                 <td colspan="6">
-                    <form method="GET" name="SearchForm">
-                        <select name="SearchType">
+                    <form method="POST" name="SearchForm">
+                        <select name="Type">
                             <option value="" selected="">Select Option</option>
                             <option value="FirstName">First Name</option>
                             <option value="LastName">Last Name</option>
@@ -39,7 +39,7 @@
                         </select>
                         <input type="text" name="SearchKey"></input>
                         <input type="submit" value="Search" name="Search"></input>
-                        <a href="/travel_agency/Client/AllClients">Clear</a>
+                        <a href="/travel_agency/Client/AllClients">Refresh</a>
                     </form>
                 </td>
             </tr>
@@ -56,7 +56,8 @@
         </thead>
         <tbody>
         <?php if(count($ClientList)):
-            $count = $this->uri->segment(3,0);
+            $page = $this->uri->segment(3,0);
+            $count = ($page === 0)? 0 : ($page -1 ) * $PerPage;
             foreach ($ClientList as $row): ?>
         	<tr>
                 <td><?= ++$count ?></td>
@@ -83,7 +84,6 @@
             </tr>
         </tbody>
     </table>
-</body>
-</html>
+<?php $this->load->view('Shared/footer_view'); ?>
 
 

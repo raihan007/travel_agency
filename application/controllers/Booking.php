@@ -11,6 +11,24 @@ class Booking extends CI_Controller {
 		$this->load->library('UniqueKey');
 	}
 
+	private function Config_Pagination($BaseUrl='',$Total=''){
+		$config = array();
+		$config = [
+			'base_url' => base_url($BaseUrl),
+			'per_page' => 5,
+			'total_rows' => $Total,
+			'use_page_numbers' => TRUE,
+			'full_tag_open' => '<div id="pagination">',
+			'full_tag_close' => '</div>',
+			'cur_tag_open' => '<b>',
+			'cur_tag_close' => '</b>',
+			'next_link' => 'Next',
+			'prev_link' => 'Previous',
+			'uri_segment' => 3,
+		];
+		return $config;
+	}
+
 	public function AllBooking($offset = 0)
 	{
 		$data['title'] = "All Booking Details";
@@ -20,18 +38,12 @@ class Booking extends CI_Controller {
 			$Total = $this->PackageModel->Get_Number_Of_Rows('EntityNo','booking_info_view');
 
 			$this->load->library('pagination');
-			$config = [
-				'base_url' => base_url('Booking/AllBooking'),
-				'per_page' => 5,
-				'total_rows' => $Total,
-			];
-
-
+			$config = $this->Config_Pagination('Booking/AllBooking',$Total);
 			$this->pagination->initialize($config);
 				
-			$data['BookingList'] = $this->BookingModel->Get_Booking_List($config['per_page'],$offset);
+			$data['BookingList'] = $this->BookingModel->GET(array(),$config['per_page'],$offset);
 			$data['Total'] = $Total;
-
+			$data['PerPage'] = $config['per_page'];
 			$this->load->view('Booking/booking_view',$data);
 		}else{
 			redirect('Home');
@@ -63,6 +75,7 @@ class Booking extends CI_Controller {
 						'TotalCost' => $this->input->post('TotalCost'),
 						'PackageId' => $this->input->post('PackageId'),
 				       	'ClientId' => $this->input->post('ClientId'),
+				       	'Date' => $this->input->post('BookingDate')
 					);
 					$Status = $this->BookingModel->Add_New_Booking_info($BookingData);
 			        if($Status){
@@ -79,6 +92,97 @@ class Booking extends CI_Controller {
 					$this->load->view('Booking/add_view', $data);
 				}
 			}
+		}else{
+			redirect('Home');
+		}
+	}
+
+	public function edit($id = 0)
+	{	
+		$data['title'] = 'Update Booking Details';
+		if($this->session->userdata('UserRole') === 'Admin') {
+			$data['PackagesList'] = $this->PackageModel->Get_Packages_Title();
+			$data['PackagesList'] = array(' ' => '-- Select Package --') + $data['PackagesList'];
+			$data['ClientsList'] = $this->ClientModel->Get_Clients_Name();
+			$data['ClientsList'] = array(' ' => '-- Select Client --') + $data['ClientsList'];
+			$data['Booking'] = $this->BookingModel->Get_By_ID($id);
+			$data['Package'] = $this->PackageModel->Get_Details($data['Booking']['PackageId']);
+			$BookingId = $data['Booking']['EntityNo'];
+			if(!$this->input->post('Update'))
+			{
+				$data['message'] = '';
+				$this->load->view('Booking/edit_view', $data);
+			}
+			else
+			{
+				if($this->form_validation->run('BookingInfoForm'))
+				{
+					$Data = array(
+						'EntityNo' => $BookingId,
+						'PackageId' => $this->input->post('PackageId'),
+						'Quantity' => $this->input->post('Quantity'),
+						'ClientId' => $this->input->post('ClientId'),
+					    'TotalCost' => $this->input->post('TotalCost'),
+					    'Date' => $this->input->post('BookingDate')
+					);
+					$Status = $this->BookingModel->Update_Booking_info($Data);
+
+					if($Status){
+						$this->session->set_flashdata('success', 'Data Updated successfully.');
+					}else{
+						$this->session->set_flashdata('error', 'Some problems occured, please try again.');
+					}
+					redirect(base_url('Booking/AllBooking'));
+				}
+				else
+				{
+					$data['message'] = validation_errors();
+					$this->load->view('Booking/edit_view', $data);
+				}
+			}
+		}else{
+			redirect('Home');
+		}
+	}
+
+	public function Details($EntityNo)
+	{
+		$data['title'] = "Package Details";
+		if($this->session->userdata('UserRole') === 'Admin') {
+			$data['Booking'] = $this->BookingModel->Get_By_ID($EntityNo);
+			$data['Client'] = $this->ClientModel->Get_Details($data['Booking']['ClientId']);
+			$data['Package'] = $this->PackageModel->Get_Details($data['Booking']['PackageId']);
+			$this->load->view('Booking/details_view',$data);
+		}else{
+			redirect('Home');
+		}
+	}
+
+	public function Remove($EntityNo)
+	{
+		$data['title'] = "Remove Package Details";
+		if($this->session->userdata('UserRole') === 'Admin') {
+			$data['Package'] = $this->PackageModel->Get_By_ID($EntityNo);
+			$PackageId = $data['Package']['ID'];
+			if($data['Package']['Gallery'] === '1'){
+				$data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
+			}
+			if($this->input->post('Delete'))
+			{
+				$PackageData = array(
+					'EntityNo' => $data['Package']['EntityNo'],
+					'IsDeleted' => 1,
+					'ID' => $PackageId, 
+				);
+				$Status = $this->PackageModel->Delete_Package_info($PackageData);
+				if($Status){
+					$this->session->set_flashdata('success', 'Data successfully deleted.');
+				}else{
+					$this->session->set_flashdata('error', 'Some problems occured, please try again.');
+				}
+				redirect(base_url('Packages/AllPackages'));
+			}
+			$this->load->view('Package/remove_view',$data);
 		}else{
 			redirect('Home');
 		}

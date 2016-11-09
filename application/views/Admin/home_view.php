@@ -57,6 +57,16 @@
 		</tr>
 		<tr>
 			<td class="menu">
+				<a href="/travel_agency/Report/Booking">Package Booking Report</a>
+			</td>
+		</tr>
+		<tr>
+			<td class="menu">
+				<a href="/travel_agency/Report/Sales">Sales Report</a>
+			</td>
+		</tr>
+		<tr>
+			<td class="menu">
 				<a href="/travel_agency/Admin/Profile">Profile</a>
 			</td>
 		</tr>

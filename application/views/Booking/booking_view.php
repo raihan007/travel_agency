@@ -32,7 +32,8 @@
         </thead>
         <tbody>
         <?php if(count($BookingList)):
-            $count = $this->uri->segment(3,0);
+            $page = $this->uri->segment(3,0);
+            $count = ($page === 0)? 0 : ($page -1 ) * $PerPage;
             foreach ($BookingList as $row): ?>
         	<tr>
                 <td><?= ++$count ?></td>

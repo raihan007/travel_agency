@@ -17,7 +17,58 @@ class BookingModel extends MY_Model {
 		}
 		else 
 		{
-			return NULL;
+			return 0;
+		}
+	}
+
+	public function GET($SearchKey = array(),$perpage = 0, $page = 0)
+	{
+		$page = $page-1;
+		if ($page<0) { 
+			$page = 0;
+		}
+		$from = $page*$perpage;
+
+		$this->db->select();
+		$this->db->from('booking_info_view');
+		if (!empty($SearchKey)) {
+			$this->db->like($SearchKey);
+		}
+		$this->db->order_by('EntityNo', 'ASC');
+		$this->db->limit($perpage, $from);
+		$result = $this->db->get();
+		//echo $this->db->last_query();
+		if($result->num_rows() > 0)
+		{
+			return $result->result_array();
+		}
+		else 
+		{
+			return array();
+		}
+	}
+
+	public function GET_SUM($where = array(),$perPage = 0, $page = 0)
+	{
+		$page = $page-1;
+		if ($page<0) { 
+			$page = 0;
+		}
+		$from = $page*$perPage;
+
+		$sql = "SELECT SUM(TotalCost) FROM (SELECT booking_info_view.TotalCost FROM booking_info_view ORDER BY booking_info_view.EntityNo ASC LIMIT $perPage OFFSET $from) AS GrandTotal";
+		if($perPage === 0 && $page === 0){
+			$sql = "SELECT SUM(TotalCost) FROM booking_info_view ORDER BY EntityNo ASC";
+		}
+		$result = $this->db->query($sql);
+		
+		if($result->num_rows() > 0)
+		{
+			return $result->row_array();
+		}
+		else 
+		{
+			return 0;
 		}
 	}
 
@@ -37,7 +88,7 @@ class BookingModel extends MY_Model {
 
 	public function Get_By_ID($Id = 0)
 	{
-		$sql = "SELECT * FROM packages_info WHERE EntityNo=$Id";
+		$sql = "SELECT * FROM packages_booking_info WHERE EntityNo=$Id";
 		$result = $this->db->query($sql);
 
 		if($result->num_rows() === 1)
@@ -83,7 +134,7 @@ class BookingModel extends MY_Model {
 	public function Add_New_Booking_Info($BookingData = array())
 	{
 		extract($BookingData);
-		$sql = "INSERT INTO packages_booking_info VALUES (null,'$PackageId',$Quantity,$TotalCost,'$ClientId',DEFAULT)";
+		$sql = "INSERT INTO packages_booking_info VALUES (null,'$PackageId',$Quantity,$TotalCost,'$ClientId','$Date')";
 		$insert = $this->db->query($sql);
         if($insert){
             return true;
@@ -106,9 +157,9 @@ class BookingModel extends MY_Model {
         return false;
 	}
 
-    function Update_Package_Info($PackageData = array()) {
-	    extract($PackageData);
-		$sql = "UPDATE Packages_info SET Title='$Title',Gallery='$Gallery',Type='$Type',Cost=$Cost,Discount=$Discount,Remarks='$Remarks' WHERE EntityNo=$EntityNo AND ID='$ID'";
+    function Update_Booking_Info($Data = array()) {
+	    extract($Data);
+		$sql = "UPDATE Packages_booking_info SET PackageId='$PackageId',Quantity=$Quantity,TotalCost=$TotalCost,ClientId='$ClientId',Date='$Date' WHERE EntityNo=$EntityNo";
 		
 		$insert = $this->db->query($sql);
         if($insert){

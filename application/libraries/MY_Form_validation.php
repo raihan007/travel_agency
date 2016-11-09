@@ -63,6 +63,15 @@ class MY_Form_validation extends CI_Form_validation {
         }
     }
 
+    public function is_valid_date_time($date) {
+        if (date('Y-m-d H:i:s', strtotime($date)) == $date) {
+            return TRUE;
+        } else {
+            $this->CI->form_validation->set_message('is_valid_date', 'The %s must be like this "yyyy-mm-dd" formate');
+                return FALSE;
+        }
+    }
+
     /**
      * Verify that a string contains a specified number of
      * uppercase, lowercase, and numbers.

@@ -24,14 +24,12 @@
 			<tr>
 				<td>Gender</td>
 				<td>
-					<?php if ($Client['Gender'] === 'Male'):?>
-						<input type="radio" name="Gender" checked="checked" value="Male"/>Male
-						<input type="radio" name="Gender" value="Female"/>Female
-					<?php else: ?>
-						<input type="radio" name="Gender" value="Male"/>Male
-						<input type="radio" name="Gender" checked="checked" value="Female"/>Female
-                    <?php endif; ?>
+					<input type="radio" name="Gender" value="Male" <?php echo set_value('Gender',$Client['Gender']) == 'Male' ? "checked" : ""; ?> />Male
+
+					<input type="radio" name="Gender" value="Female" <?php echo set_value('Gender',$Client['Gender']) == 'Female' ? "checked" : "";?>/>Female
+
 				</td>
+				
 			</tr>
 			<tr>
 				<td>Email</td>
@@ -65,11 +63,7 @@
 				<td>
 					<select name="BloodGroup">
 						<?php foreach ($BloodGroupList as $key => $value):?>
-							<?php if ($key === $Client['BloodGroup']):?>
-								<option selected="selected" value="<?= $key?>"><?= $value?></option>
-							<?php else: ?>
-								<option value="<?= $key?>"><?= $value?></option>
-                            <?php endif; ?>
+							<option value="<?= $key?>" <?php echo set_value('BloodGroup',$Client['BloodGroup']) == $key ? "selected" : ""; ?>><?= $value?></option>
 						<?php endforeach; ?>
 					</select>
 				</td>
@@ -83,18 +77,14 @@
 				<td>
 					<select name="Type">
 						<?php foreach ($ClientTypeList as $key => $value):?>
-							<?php if ($key === $Client['Type']):?>
-								<option selected="selected" value="<?= $key?>"><?= $value?></option>
-							<?php else: ?>
-								<option value="<?= $key?>"><?= $value?></option>
-                            <?php endif; ?>
+							<option value="<?= $key?>" <?php echo set_value('Type',$Client['Type']) == $key ? "selected" : ""; ?>><?= $value?></option>
 						<?php endforeach; ?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td style="text-align: right;" ><a href="/travel_agency/Client/AllClients">Back</a></td>
-				<td><input type="submit" name="Update" value="Update"></input></td>
+				<td style="text-align: right;" ><a href="/travel_agency/Client/AllClients">Back </a></td>
+				<td><input type="submit" name="Update" value="Update"></input><a href="/travel_agency/Admin"> Home</a></td>
 			</tr>
 		</table>
 	</form>

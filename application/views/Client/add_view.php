@@ -24,9 +24,9 @@
 			<tr>
 				<td>Gender</td>
 				<td>
-					<input type="radio" name="Gender" value="Male"/>Male
+					<input type="radio" name="Gender" value="Male" <?php echo set_value('Gender') == 'Male' ? "checked" : ""; ?> />Male
 
-					<input type="radio" name="Gender" value="Female"/>Female
+					<input type="radio" name="Gender" value="Female" <?php echo set_value('Gender') == 'Female' ? "checked" : "";?>/>Female
 
 				</td>
 			</tr>
@@ -43,11 +43,11 @@
 			</tr>
 			<tr>
 				<td>Permanent Address</td>
-				<td><textarea rows="4" cols="21" name="PermanentAddress" ></textarea></td>
+				<td><textarea rows="4" cols="21" name="PermanentAddress" ><?php echo set_value('PermanentAddress')?></textarea></td>
 			</tr>
 			<tr>
 				<td>Present Address</td>
-				<td><textarea rows="4" cols="21" name="PresentAddress" ></textarea></td>
+				<td><textarea rows="4" cols="21" name="PresentAddress" ><?php echo set_value('PresentAddress')?></textarea></td>
 			</tr>
 			<tr>
 				<td>Phone No.</td>
@@ -62,7 +62,7 @@
 				<td>
 					<select name="BloodGroup">
 						<?php foreach ($BloodGroupList as $key => $value):?>
-								<option value="<?= $key?>"><?= $value?></option>
+								<option value="<?= $key?>" <?php echo set_value('BloodGroup') == $key ? "selected" : ""; ?>><?= $value?></option>
 						<?php endforeach; ?>
 					</select>
 				</td>
@@ -76,7 +76,7 @@
 				<td>
 					<select name="Type">
 						<?php foreach ($ClientTypeList as $key => $value):?>
-							<option value="<?= $key?>"><?= $value?></option>
+							<option value="<?= $key?>" <?php echo set_value('Type') == $key ? "selected" : ""; ?>><?= $value?></option>
 						<?php endforeach; ?>
 					</select>
 				</td>

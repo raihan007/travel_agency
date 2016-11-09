@@ -18,7 +18,7 @@
 				<td>
 					<select name="PackageId" id="PackageId" onchange="GetDetails()">
 						<?php foreach ($PackagesList as $key => $value):?>
-								<option value="<?= $key?>"><?= $value?></option>
+								<option value="<?= $key?>" <?php echo set_value('PackageId') == $key ? "selected" : ""; ?>><?= $value?></option>
 						<?php endforeach; ?>
 					</select>
 				</td>
@@ -48,7 +48,7 @@
 				<td>
 					<select name="ClientId">
 						<?php foreach ($ClientsList as $key => $value):?>
-								<option value="<?= $key?>"><?= $value?></option>
+								<option value="<?= $key?>" <?php echo set_value('ClientId') == $key ? "selected" : ""; ?>><?= $value?></option>
 						<?php endforeach; ?>
 					</select>
 				</td>

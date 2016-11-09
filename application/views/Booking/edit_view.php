@@ -1,76 +1,61 @@
 <?php $this->load->view('Shared/header_view'); ?>
-	<form method="POST" action="" name="PackageInfoForm" enctype="multipart/form-data">
-		<table style="width: auto;" align="left" >
+	<form method="POST" action="" name="BookingInfoForm" enctype="multipart/form-data">
+		<table style="width: auto;" align="center" >
 			<tr>
 				<td align="center" style="color: red;" colspan="2">
 					<?php echo $message; ?>
 				</td>
 			</tr>
 			<tr>
-				<td style="text-align: center;" colspan="2"><h2>Update Package Details</h2></td>
+				<td style="text-align: center;" colspan="2"><h2>Update Package Booking Details</h2></td>
 			</tr>
 			<tr>
 				<td>Entity No.</td>
-				<td><input type="text" name="EntityNo" value="<?= $Package['EntityNo'] ?>" readonly></input></td>
+				<td><input type="text" name="EntityNo" value="<?= $Booking['EntityNo'] ?>" readonly></input></td>
 			</tr>
 			<tr>
-				<td>Title</td>
-				<td><input type="text" name="Title" value="<?= set_value('Title',$Package['Title']) ?>"></input></td>
-			</tr>
-			<tr>
-				<td>Cost</td>
-				<td><input type="text" name="Cost" value="<?= set_value('Cost',$Package['Cost']) ?>"></input></td>
-			</tr>
-			<tr>
-				<td>Type</td>
+				<td>Package</td>
 				<td>
-					<select name="Type">
-						<?php if($Package['Type']==="Local Tour"): ?>
-							<option selected="" value="Local Tour">Local Tour</option>
-							<option value="International Tour">International Tour</option>
-						<?php elseif($Package['Type']==="International Tour"): ?>
-							<option value="Local Tour">Local Tour</option>
-							<option selected="" value="International Tour">International Tour</option>
-						<?php else: ?>
-							<option value="Local Tour">Local Tour</option>
-							<option value="International Tour">International Tour</option>
-						<?php endif; ?>
+					<select name="PackageId" id="PackageId" onchange="GetDetails()">
+						<?php foreach ($PackagesList as $key => $value):?>
+								<option value="<?= $key?>" <?php echo set_value('PackageId',$Booking['PackageId']) == $key ? "selected" : ""; ?>><?= $value?></option>
+						<?php endforeach; ?>
 					</select>
 				</td>
 			</tr>
 			<tr>
+				<td>Tickets Quantity</td>
+				<td><input type="text" name="Quantity" id="Quantity" value="<?= set_value('Quantity',$Booking['Quantity'])?>"></input></td>
+			</tr>
+			<tr>
+				<td>Cost</td>
+				<td><input type="text" name="Cost" id="Cost" value="<?= set_value('Cost',$Package['Cost']) ?>"></input></td>
+			</tr>
+			<tr>
 				<td>Discount</td>
-				<td><input type="text" name="Discount" value="<?= set_value('Discount',$Package['Discount']) ?>"></input></td>
+				<td><input type="text" id="Discount" name="Discount" value="<?= set_value('Discount',$Package['Discount']) ?>"></input></td>
 			</tr>
 			<tr>
-				<td>Last Booking Date</td>
-				<td><input type="text" placeholder="YYYY-MM-DD" name="BookingLastDate" value="<?= set_value('BookingLastDate',$Package['BookingLastDate']) ?>"></input></td>
+				<td>Total Cost</td>
+				<td><input type="text" id="TotalCost" name="TotalCost" value="<?= set_value('TotalCost',$Booking['TotalCost']) ?>"></input></td>
 			</tr>
-			<?php if($Package['Gallery'] == '1'): ?>
 			<tr>
-				<td colspan="2">
-					<?php foreach ($Package['Images'] as $key => $value) :?>
-	                    <img id="Image" height='100' width='100' src="<?php echo base_url('Public/Photos/Packages/'.$value); ?>" />
-	            	<?php endforeach; ?>
-				</td>
+				<td>Booking Date</td>
+				<td><input type="text" placeholder="YYYY-MM-DD" name="BookingDate" value="<?= set_value('BookingDate',$Booking['Date']) ?>" readonly></input></td>
 			</tr>
-			<?php endif; ?>
 			<tr>
-				<td>Photos</td>
+				<td>Client</td>
 				<td>
-					<input type="file" name="Photos[]" onchange="PackageImages(this)" multiple></input>
+					<select name="ClientId">
+						<?php foreach ($ClientsList as $key => $value):?>
+								<option value="<?= $key?>" <?php echo set_value('ClientId',$Booking['ClientId']) == $key ? "selected" : ""; ?>><?= $value?></option>
+						<?php endforeach; ?>
+					</select>
 				</td>
-				<td id="Photos">
-					
-				</td>
-			</tr>
-			<tr>
-				<td>Details</td>
-				<td><textarea rows="10" cols="21" name="Remarks" ><?= set_value('Remarks',$Package['Remarks']) ?></textarea></td>
 			</tr>
 			<tr>
 				<td style="text-align: right;" >
-				<a href="/travel_agency/Packages/AllPackages">Back</a>
+				<a href="/travel_agency/Booking/AllBooking">All Booking List</a>
 				</td>
 				<td>
 					<input type="submit" name="Update" value="Update"></input>

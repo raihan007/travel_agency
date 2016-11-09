@@ -31,6 +31,7 @@ class ClientModel extends MY_Model {
 
 		$this->db->select();
 		$this->db->from($this->TableName);
+		$this->db->where_not_in('IsDeleted', 1);
 		if (!empty($SearchKey)) {
 			$this->db->like($SearchKey);
 		}
@@ -77,10 +78,25 @@ class ClientModel extends MY_Model {
 		}
 	}
 
+	public function Get_Details($Id = '')
+	{
+		$sql = "SELECT * FROM users_info WHERE UserID='$Id'";
+		$result = $this->db->query($sql);
+
+		if($result->num_rows() === 1)
+		{
+			return $result->row_array();
+		}
+		else 
+		{
+			return array();
+		}
+	}
+
 	public function Add_New_Client_Info($clientData = array()){
 		extract($clientData);
 		$sql = "INSERT INTO users_access VALUES (null,'$UserId','$Username','$Password',default)";
-		$sql1 = "INSERT INTO users_info VALUES (null,'$UserId','$FirstName','$LastName','$Gender','$Email','$Photo','$PermanentAddress','$PresentAddress','$PhoneNo','$Birthdate','$BloodGroup','$NationalIdNo',default)";
+		$sql1 = "INSERT INTO users_info VALUES (null,'$UserId','$FirstName','$LastName','$Gender','$Email','$Photo','$PermanentAddress','$PresentAddress','$PhoneNo','$Birthdate','$BloodGroup','$NationalIdNo',default,default)";
 		
 		$insert = $this->db->query($sql);
 		$insert1 = $this->db->query($sql1);
@@ -102,10 +118,16 @@ class ClientModel extends MY_Model {
         }
 	}
 
-	function _deleteRowWhere($table, $EntityNo) {
-	    return $this->db
-	    		->where('EntityNo',$EntityNo)
-				->delete($table);
+	function Delete_Client_info($Data = array()){
+		extract($Data);
+	    $sql = "UPDATE users_info SET IsDeleted=$IsDeleted WHERE EntityNo=$EntityNo AND UserId='$UserId'";
+		
+		$insert = $this->db->query($sql);
+        if($insert){
+            return true;
+        }else{
+            return false;    
+        }
 	}
 
 	public function Get_Where($EntityNo = 0){

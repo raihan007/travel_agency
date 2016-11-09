@@ -42,6 +42,9 @@ class MY_Model extends CI_Model {
 	public function Get_Total_Rows($Where=array(),$table = '')
 	{
 		$this->db->select("COUNT(*) as 'Total'");
+		if ($table !== 'booking_info_view') {
+			$this->db->where_not_in('IsDeleted', 1);
+		}
 		if (!empty($Where)) {
 			$this->db->like($Where);
 		}

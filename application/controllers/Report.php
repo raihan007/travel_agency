@@ -1,62 +1,58 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Client extends CI_Controller {
+class Report extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();
-		$this->load->model('ClientModel');
-		$this->load->library('UniqueKey');
+		$this->load->model('BookingModel');
+		$this->load->model('PackageModel');
 	}
 
 	public function test()
 	{
 		echo date("Y-m-d H:i:s");
+		$Total = $this->BookingModel->Get_SUM(array(),2,2);
+		print_r($Total['SUM(TotalCost)']);
 	}
 
-	public function index()
-	{	
-		$data['title'] = 'Client Panel';
-		if($this->session->userdata('UserRole') === 'Client') {
-			$ClientInfo = $this->ClientModel->Get_By_ID($this->session->userdata('UserId'));
-
-			$data['FullName'] = $ClientInfo['FirstName'].' '.$ClientInfo['LastName'];
-			$data['LastLoginTime'] = $this->ClientModel->Get_Last_Login_By_ID($this->session->userdata('UserId'));
-			$this->load->view('Client/home_view',$data);
-		}
-		else{
-			redirect('Home');
-		}
-	}
-
-	public function AllClients($offset = 0)
+	public function Sales($offset = 0)
 	{
+		$data['title'] = 'Packages Sales Report';
 		$data['message'] = '';
 		$Search = array();
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->load->library('pagination');
-			if($this->input->post('Search'))
-			{
-				if($this->form_validation->run('SearchForm'))
-				{
-					$column = $this->input->post('Type');
-					$value = $this->input->post('SearchKey');
-
-					$Search = array(
-						$column => $value
-					);
-				}else{
-					$data['message'] = validation_errors();
-				}
-			}
-			$Total = $this->ClientModel->Get_Total_Rows($Search,'users_info');
-			$config = $this->Config_Pagination('Client/AllClients/',$Total);
-			$config['first_link'] = 'First';
-			$config['last_link'] = 'Last';
+			$Total = $this->BookingModel->Get_Total_Rows($Search,'booking_info_view');
+			$config = $this->Config_Pagination('Report/Sales/',$Total);
 			$this->pagination->initialize($config);
-			$data['ClientList'] = $this->ClientModel->GET($Search,$config['per_page'],$offset);
+			$PageTotal = $this->BookingModel->Get_SUM($Search,$config['per_page'],$offset);
+			$data['PageTotal'] = $PageTotal['SUM(TotalCost)'];
+			$GrandTotal = $this->BookingModel->Get_SUM($Search,0,1);
+			$data['GrandTotal'] = $GrandTotal['SUM(TotalCost)'];
+			$data['BookingList'] = $this->BookingModel->GET($Search,$config['per_page'],$offset);
 			$data['Total'] = $Total;
 			$data['PerPage'] = $config['per_page'];
-			$this->load->view('Client/clients_view',$data);
+			$this->load->view('Reports/sales_report_view',$data);
+		}else{
+			redirect('Home');
+		}
+	}
+
+	public function Booking($offset = 0)
+	{
+		$data['title'] = 'Packages Booking Report';
+		$data['message'] = '';
+		$Search = array();
+		if($this->session->userdata('UserRole') === 'Admin') {
+			$this->load->library('pagination');
+			$Total = $this->PackageModel->GET_Row_Num_Booking_Report();
+			$config = $this->Config_Pagination('Report/Booking/',$Total);
+			$this->pagination->initialize($config);
+
+			$data['PackageList'] = $this->PackageModel->GET_Booking_Report($Search,$config['per_page'],$offset);
+			$data['Total'] = $Total;
+			$data['PerPage'] = $config['per_page'];
+			$this->load->view('Reports/booking_report_view',$data);
 		}else{
 			redirect('Home');
 		}
@@ -66,7 +62,7 @@ class Client extends CI_Controller {
 		$config = array();
 		$config = [
 			'base_url' => base_url($BaseUrl),
-			'per_page' => 5,
+			'per_page' => 3,
 			'total_rows' => $Total,
 			'use_page_numbers' => TRUE,
 			'full_tag_open' => '<div id="pagination">',
@@ -97,7 +93,6 @@ class Client extends CI_Controller {
 			);
 
 			$data['ClientTypeList'] = array(
-				' ' => 'Select Client Type',
 				'Regular'  => 'Regular',
 				'Premium'  => 'Premium',
 				'Royal'  => 'Royal',
@@ -173,15 +168,11 @@ class Client extends CI_Controller {
 
 	public function Details($EntityNo)
 	{
-		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['title'] = "Client Details";
+		$data['title'] = "Client Details";
 		
-			$data['Client'] = $this->ClientModel->Get_Where($EntityNo);
+		$data['Client'] = $this->ClientModel->Get_Where($EntityNo);
 
-			$this->load->view('Client/details_view',$data);
-		}else{
-			redirect('Home');
-		}
+		$this->load->view('Client/details_view',$data);
 	}
 
 	public function Edit($EntityNo)
@@ -201,7 +192,7 @@ class Client extends CI_Controller {
 				'O-'  => 'O-',
 			);
 			$data['ClientTypeList'] = array(
-				' '   => 'Select Client Type',
+				' '   => 'Select Type',
 				'Regular'  => 'Regular',
 				'Premium'  => 'Premium',
 				'Royal'  => 'Royal',
@@ -268,35 +259,6 @@ class Client extends CI_Controller {
 			}
 		}else
 		{
-			redirect('Home');
-		}
-	}
-
-	public function Remove($EntityNo)
-	{
-		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['title'] = "Client Details";
-		
-			$data['Client'] = $this->ClientModel->Get_Where($EntityNo);
-
-			if($this->input->post('Remove'))
-			{
-				$Data = array(
-					'EntityNo' => $data['Client']['EntityNo'],
-					'IsDeleted' => 1,
-					'UserId' => $data['Client']['UserId'], 
-				);
-				$Status = $this->ClientModel->Delete_Client_info($Data);
-				if($Status){
-					$this->session->set_flashdata('success', 'Data successfully deleted.');
-				}else{
-					$this->session->set_flashdata('error', 'Some problems occured, please try again.');
-				}
-				redirect(base_url('Client/AllClients'));
-			}else{
-				$this->load->view('Client/remove_view',$data);
-			}
-		}else{
 			redirect('Home');
 		}
 	}

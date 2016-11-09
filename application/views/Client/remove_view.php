@@ -1,6 +1,6 @@
 <?php $this->load->view('Shared/header_view'); ?>
 	<table border="1" align="center">
-		<tr style="text-align: center;"><td colspan="2"><h2>Client Details</h2></td></tr>
+		<tr style="text-align: center;"><td colspan="2"><h2>Delete Client Details</h2></td></tr>
 		<tr>
 			<td style="text-align: right;">Entity No :</td>
 			<td><?= $Client['EntityNo'] ?></td>
@@ -55,10 +55,21 @@
 			<td><?= $Client['Type'] ?></td>
 		</tr>
 		<tr>
-			<td  style="text-align: center;" colspan="2">
-				<a href="/travel_agency/Admin"> Home</a>
+			<td style="text-align: center;" colspan="2">
+				<h3>Are You Sure?</h3>
+				<form method="POST">
+					<input type="hidden" value="<?=$Client['EntityNo']?>"></input>
+					<input type="submit" name="Remove" value="Remove"></input>
+				</form>
+				<br/>
+			</td>
+		</tr>
+		<tr>
+			<td>
 				<a href="/travel_agency/Client/AllClients">Back</a>
-				<a href="/travel_agency/Client/Edit/<?=$Client['EntityNo']?>">Update</a>
+			</td>
+			<td>
+				<a href="/travel_agency/Admin"> Home</a>
 			</td>
 		</tr>
 	</table>

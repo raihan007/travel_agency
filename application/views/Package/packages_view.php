@@ -12,7 +12,11 @@
             </tr>
             <?php endif; ?>
 			<tr><td colspan="9"><h2>All Packages List</h2></td></tr>
-			<tr><td style="text-align: left;" colspan="9"><a href="/travel_agency/Packages/add">Add New</a></td></tr>
+			<tr>
+                <td><a href="/travel_agency/Packages/add">Add New</a></td>
+                <td><a href="/travel_agency/Admin">Home</a></td>
+                <td colspan="7"></td>
+            </tr>
             <tr>
                 <th>#</th>
                 <th>Title</th>
@@ -27,7 +31,8 @@
         </thead>
         <tbody>
         <?php if(count($PackageList)):
-            $count = $this->uri->segment(3,0);
+            $page = $this->uri->segment(3,0);
+            $count = ($page === 0)? 0 : ($page -1 ) * $PerPage;
             foreach ($PackageList as $row): ?>
         	<tr>
                 <td><?= ++$count ?></td>
@@ -58,8 +63,7 @@
             </tr>
             <?php endif; ?>
             <tr>
-                <td colspan="2"><a href="/travel_agency/Admin">Home</a></td>
-                <td colspan="7"><?= $this->pagination->create_links() ?></td>
+                <td colspan="9"><?= $this->pagination->create_links() ?></td>
             </tr>
         </tbody>
     </table>

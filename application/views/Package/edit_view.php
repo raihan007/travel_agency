@@ -25,16 +25,8 @@
 				<td>Type</td>
 				<td>
 					<select name="Type">
-						<?php if($Package['Type']==="Local Tour"): ?>
-							<option selected="" value="Local Tour">Local Tour</option>
-							<option value="International Tour">International Tour</option>
-						<?php elseif($Package['Type']==="International Tour"): ?>
-							<option value="Local Tour">Local Tour</option>
-							<option selected="" value="International Tour">International Tour</option>
-						<?php else: ?>
-							<option value="Local Tour">Local Tour</option>
-							<option value="International Tour">International Tour</option>
-						<?php endif; ?>
+						<option value="Local Tour" <?php echo set_value('Type',$Package['Type']) == 'Local Tour' ? "selected" : ""; ?>>Local Tour</option>
+						<option value="International Tour" <?php echo set_value('Type',$Package['Type']) == 'International Tour' ? "selected" : ""; ?>>International Tour</option>
 					</select>
 				</td>
 			</tr>

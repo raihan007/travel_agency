@@ -25,8 +25,8 @@
 				<td>Type</td>
 				<td>
 					<select name="Type">
-						<option value="Local Tour">Local Tour</option>
-						<option value="International Tour">International Tour</option>
+						<option value="Local Tour" <?php echo set_value('Type') == 'Local Tour' ? "selected" : ""; ?>>Local Tour</option>
+						<option value="International Tour" <?php echo set_value('Type') == 'International Tour' ? "selected" : ""; ?>>International Tour</option>
 					</select>
 
 				</td>

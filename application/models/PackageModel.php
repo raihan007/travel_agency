@@ -6,6 +6,33 @@ class PackageModel extends MY_Model {
 		parent::__construct();
 	}
 
+	public function GET($SearchKey = array(),$perpage = 0, $page = 0)
+	{
+		$page = $page-1;
+		if ($page<0) { 
+			$page = 0;
+		}
+		$from = $page*$perpage;
+
+		$this->db->select();
+		$this->db->from('packages_info');
+		$this->db->where_not_in('IsDeleted', 1);
+		if (!empty($SearchKey)) {
+			$this->db->like($SearchKey);
+		}
+		$this->db->order_by('EntityNo', 'ASC');
+		$this->db->limit($perpage, $from);
+		$result = $this->db->get();
+		if($result->num_rows() > 0)
+		{
+			return $result->result_array();
+		}
+		else 
+		{
+			return array();
+		}
+	}
+
 	public function Get_Packages_List($limit = 0, $offset = 0)
 	{
 		$sql = "SELECT * FROM packages_info WHERE NOT IsDeleted=1 AND BookingLastDate >= NOW() ORDER BY EntityNo LIMIT $limit OFFSET $offset";
@@ -33,6 +60,60 @@ class PackageModel extends MY_Model {
 			}
 		}
         return $return;
+	}
+
+	public function GET_Booking_Report($where = array(),$perPage = 0, $page = 0)
+	{
+		$page = $page-1;
+		if ($page<0) { 
+			$page = 0;
+		}
+		$from = $page*$perPage;
+
+		$sql = "SELECT packages_booking_info.PackageId,packages_info.Title,
+				packages_info.Cost,packages_info.Discount,
+				COUNT(packages_booking_info.PackageId) AS 'TIMES'
+				FROM packages_booking_info 
+				inner join packages_info on packages_info.ID = packages_booking_info.PackageId
+				WHERE NOT packages_info.IsDeleted=1
+				GROUP BY packages_booking_info.PackageId ORDER BY TIMES DESC LIMIT $perPage OFFSET $from";
+		/*if($perPage === 0 && $page === 0){
+			$sql = "SELECT SUM(TotalCost) FROM booking_info_view ORDER BY EntityNo ASC";
+		}*/
+		$result = $this->db->query($sql);
+		
+		if($result->num_rows() > 0)
+		{
+			return $result->result_array();
+		}
+		else 
+		{
+			return array();
+		}
+	}
+
+	public function GET_Row_Num_Booking_Report()
+	{
+		$sql = "SELECT packages_booking_info.PackageId,packages_info.Title,
+				packages_info.Cost,packages_info.Discount,
+				COUNT(packages_booking_info.PackageId) AS 'TIMES'
+				FROM packages_booking_info 
+				inner join packages_info on packages_info.ID = packages_booking_info.PackageId
+				WHERE NOT packages_info.IsDeleted=1
+				GROUP BY packages_booking_info.PackageId ORDER BY TIMES DESC ";
+		/*if($perPage === 0 && $page === 0){
+			$sql = "SELECT SUM(TotalCost) FROM booking_info_view ORDER BY EntityNo ASC";
+		}*/
+		$result = $this->db->query($sql);
+		
+		if($result->num_rows() > 0)
+		{
+			return $result->num_rows();
+		}
+		else 
+		{
+			return 0;
+		}
 	}
 
 	public function Get_By_ID($Id = 0)
