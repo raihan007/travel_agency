@@ -1,11 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>All Clients Information</title>
-</head>
-<body>
-	<table style="text-align: center;" align="center" border="1">
-		<thead>
+            <div class="row">
+                <div class="col-sm-12">
+                    <table id="DataGrid"
+                                            data-toggle="table"
+                                            data-height="900"
+                                            data-url='<?= base_url('Client/ClientsInfo_json')?>'
+                                            data-show-columns="true"
+                                            data-cookie="true"
+                                            data-cookie-id-table="saveId"
+                                            data-toolbar="#toolbar"
+                                            data-show-export="true"
+                                            data-search="true"
+                                            data-show-refresh="true"
+                                            data-minimum-count-columns="2"
+                                            data-pagination="true"
+                                            data-id-field="EntityNo"
+                                            data-page-size="10"
+                                            data-page-list="[10,25, 50, 100, ALL]"
+                                            data-show-footer="false"
+                                            data-side-pagination="server"
+                                            data-sort-name="EntityNo"
+                                            data-sort-order="asc"
+                                            data-query-params="queryParams">
+                                            <thead>
+                                                <tr>
+                                                    <th data-field="EntityNo" data-sortable="true">#</th>
+                                                    <th data-field="FirstName" data-sortable="true">First Name</th>
+                                                    <th data-field="LastName" data-sortable="true">Last Name</th>
+                                                    <th data-field="Photo" data-formatter="imageFormatter" data-align="center">Image</th>
+                                                    <th data-field="Gender" data-sortable="true">Gender</th>
+                                                    <th data-field="PresentAddress" data-sortable="true">Present Address</th>
+                                                    <th data-field="Birthdate" data-sortable="true">Birthdate</th>
+                                                    <th data-field="BloodGroup" data-sortable="true">BloodGroup</th>
+                                                    <th data-field="Type" data-sortable="true">Type</th>
+                                                    <th data-events="operateEvents" data-formatter="operateFormatter"></th>
+                                                    </tr>
+                                            </thead>
+                                        </table>
+    <table style="text-align: center;" align="center" border="1">
+        <thead>
             <?php  if($message !== ''): ?>
             <tr>
                 <td align="center" style="color: red;" colspan="8">
@@ -23,8 +55,8 @@
                 <td style="color: red;" colspan="8"><strong><?= $notif ?></strong></td>
             </tr>
             <?php endif; ?>
-			<tr><td colspan="8"><h2>All Clients List</h2></td></tr>
-			<tr>
+            <tr><td colspan="8"><h2>All Clients List</h2></td></tr>
+            <tr>
                 <td>
                     <a href="/travel_agency/Client/add">Add New</a>
                 </td>
@@ -59,7 +91,7 @@
             $page = $this->uri->segment(3,0);
             $count = ($page === 0)? 0 : ($page -1 ) * $PerPage;
             foreach ($ClientList as $row): ?>
-        	<tr>
+            <tr>
                 <td><?= ++$count ?></td>
                 <td><?= $row['FirstName'] ?></td>
                 <td><?= $row['Gender'] ?></td>
@@ -68,7 +100,7 @@
                 <td><?= $row['PhoneNo'] ?></td>
                 <td><?= $row['Type'] ?></td>
                 <td>
-                	<a href="<?= base_url('Client/Details/'.$row['EntityNo']) ?>">Details</a><br/>
+                    <a href="<?= base_url('Client/Details/'.$row['EntityNo']) ?>">Details</a><br/>
                     <a href="<?= base_url('Client/Edit/'.$row['EntityNo']) ?>">Edit</a><br/>
                     <a href="<?= base_url('Client/Remove/'.$row['EntityNo']) ?>">Remove</a>
                 </td>
@@ -84,6 +116,7 @@
             </tr>
         </tbody>
     </table>
-<?php $this->load->view('Shared/footer_view'); ?>
+                </div>
+            </div>
 
 

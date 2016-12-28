@@ -69,6 +69,7 @@ class Packages extends CI_Controller {
 			$PackageInfo = $this->PackageModel->Get_By_ID($id);
 			$data['PackageTitle'] = $PackageInfo['Title'];
 			$data['ID'] = $PackageInfo['ID'];
+			$data['EntityNo'] = $id;
 			$data['ImageList'] = explode(",",$this->PackageModel->Get_Images($PackageInfo['ID']));
 			$this->load->view('Package/gallery_view',$data);
 		}else{
@@ -245,14 +246,19 @@ class Packages extends CI_Controller {
 	public function Details($EntityNo)
 	{
 		$data['title'] = "Package Details";
+		$data['Package'] = $this->PackageModel->Get_By_ID($EntityNo);
+		$PackageId = $data['Package']['ID'];
+		$data['EntityNo'] = $data['Package']['EntityNo'];
+		if($data['Package']['Gallery'] === '1'){
+			$data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
+		}
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['Package'] = $this->PackageModel->Get_By_ID($EntityNo);
-			$PackageId = $data['Package']['ID'];
-			if($data['Package']['Gallery'] === '1'){
-				$data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
-			}
 			$this->load->view('Package/details_view',$data);
-		}else{
+		}
+		elseif($this->session->userdata('UserRole') === 'Client') {
+			$this->load->view('Client/package_details_view',$data);
+		}
+		else{
 			redirect('Home');
 		}
 	}

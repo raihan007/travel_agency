@@ -14,7 +14,7 @@
                     <?php
                         preg_match("/_(\d+)\./", $value, $matches);
                     ?>
-                    <a href="/travel_agency/Packages/RemoveImage/<?=$ID?>/<?=$matches[1]?>">Remove</a>
+                    
                     <?php if( $count === 2): ?>
                         <?php $count = 0; ?>
                         </td>
@@ -24,7 +24,12 @@
             <?php endforeach; ?>
             </tr>
             <tr>
-                <td colspan="2"><a href="/travel_agency/Packages/AllPackages">Back</a></td>
+                <td colspan="2">
+                <?php if($this->session->userdata('UserRole') === 'Admin'): ?>
+                    <a href="/travel_agency/Packages/AllPackages">Back</a></td>
+                <?php else: ?>
+                    <a href="/travel_agency/Packages/Details/<?= $EntityNo?>">Back</a></td>
+                <?php endif; ?>
             </tr>
         </tbody>
     </table>

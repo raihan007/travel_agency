@@ -1,0 +1,223 @@
+/* @import url('https://fonts.googleapis.com/css?family=Roboto'); */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+body, html {
+	/* font-family: 'Roboto', sans-serif; */
+    font-family: 'Open Sans', sans-serif;
+    height: 100%;
+    background-color: #e2e2e2;
+}
+
+.card-container.card {
+    max-width: 400px;
+    padding: 40px 40px;
+}
+
+.profile-name-card {
+  font-weight: 80;
+  font-size: 1.5em;
+}
+
+/*
+ * Card component
+ */
+.card {
+    background-color: #F7F7F7;
+    /* just in case there no content*/
+    padding: 20px 25px 30px;
+    margin: 0 auto 25px;
+    margin-top: 50px;
+    /* shadows and rounded borders */
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.logo{
+    padding-top: 6%;
+    text-align: right;
+}
+
+.title{
+    padding-left: 5px;
+}
+
+.profile-img-card {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 10px;
+    display: block;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    border:1px solid #021a40;
+}
+
+.inputItem{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.btn-custom{
+	margin-top: 20px;
+	width: 100%;
+}
+
+.login-help {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+}
+
+#divLoading
+{
+display : none;
+}
+#divLoading.show
+{
+display : block;
+position : fixed;
+z-index: 100;
+background-image : url('loading-image.gif');
+background-color:#666;
+opacity : 0.4;
+background-repeat : no-repeat;
+background-position : center;
+left : 0;
+bottom : 0;
+right : 0;
+top : 0;
+}
+#loadinggif.show
+{
+left : 50%;
+top : 50%;
+position : absolute;
+z-index : 101;
+width : 32px;
+height : 32px;
+margin-left : -16px;
+margin-top : -16px;
+}
+
+.forgot-password {
+    color: rgb(104, 145, 162);
+}
+
+.forgot-password:hover,
+.forgot-password:active,
+.forgot-password:focus{
+    color: rgb(12, 97, 33);
+}
+
+​.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  background-color: #fff;
+  text-align: center;
+}
+
+.footer label{
+    color: #000;
+}
+
+.lockscreen-image > img {
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+}
+
+@media only screen and (max-width : 770px) {
+    .logo{
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width : 500px) {
+    .title blockquote small {
+        font-size: 11px;
+    }
+
+    h4#profile-name {
+        font-size: 15px;
+    }
+}
+
+/*Smartphones (landscape) -----------
+@media only screen
+and (min-width : 321px) {
+    #profile-name {
+      color: red;
+    }
+}
+
+Smartphones (portrait) -----------
+@media only screen
+and (max-width : 320px) {
+    #profile-name {
+      color: red;
+    }
+}
+
+iPads (portrait and landscape) -----------
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px) {
+STYLES GO HERE
+}
+
+iPads (landscape) -----------
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : landscape) {
+STYLES GO HERE
+}
+
+iPads (portrait) -----------
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait) {
+STYLES GO HERE
+}
+
+Desktops and laptops -----------
+@media only screen
+and (min-width : 1224px) {
+STYLES GO HERE
+}
+
+Large screens -----------
+@media only screen
+and (min-width : 1824px) {
+STYLES GO HERE
+}
+
+iPhone 5 (portrait & landscape)-----------
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 568px) {
+STYLES GO HERE
+}
+
+iPhone 5 (landscape)-----------
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 568px)
+and (orientation : landscape) {
+STYLES GO HERE
+}
+
+iPhone 5 (portrait)-----------
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 568px)
+and (orientation : portrait) {
+STYLES GO HERE
+} */

@@ -21,6 +21,27 @@ class ClientModel extends MY_Model {
 		}
 	}
 
+	public function GetAllClient($type='',$search='',$sort='',$order='',$limit='',$offset=''){
+		$query = $this->db
+					->from($this->TableName)
+					->order_by($sort, $order)
+					->limit($limit, $offset);
+		if($type && $search) {
+            $this->db->where($type,$search);
+        }
+
+		$query = $this->db->get();
+		
+		if($query->num_rows() > 0)
+		{
+			return $query->result_array();
+		}
+		else 
+		{
+			return array();
+		}
+	}
+
 	public function GET($SearchKey = array(),$perpage = 0, $page = 0)
 	{
 		$page = $page-1;

@@ -8,9 +8,15 @@ class AdminModel extends MY_Model {
 
 	public function Get_By_ID($UserId = '')
 	{
-		$sql = "SELECT users_info.*,users_access.Username,users_access.Password FROM users_info JOIN users_access ON users_info.UserId = users_access.UserId WHERE users_info.UserId='$UserId'";
-		$result = $this->db->query($sql);
-
+		/*$sql = "SELECT users_info.*,users_access.Username,users_access.Password FROM users_info JOIN users_access ON users_info.UserId = users_access.UserId WHERE users_info.UserId='$UserId'";*/
+		
+		$result = $this->db
+					->select('ui.*,ua.Username,ua.Email,ua.Password')
+					->from('users_info ui')
+					->join('users_access ua', 'ua.UserId = ui.UserId')
+					->where('ui.UserId', $UserId)
+					->get();
+					
 		if($result->num_rows() === 1)
 		{
 			return $result->row_array();

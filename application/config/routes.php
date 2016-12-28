@@ -38,9 +38,14 @@
 |
 */
 
-$route['default_controller'] = "Login";
+$route['default_controller'] = "Index";
 $route['404_override'] = '';
-
+$route['About'] = 'Index/About';
+$route['TourPackages'] = 'Index/Packages';
+$route['Contact'] = 'Index/Contact';
+$route['Register'] = 'Login/SignUp';
+$route['Profile'] = 'Admin/Profile';
+$route['Profile/Update/(:any)'] = 'Admin/UpdateProfile/$1';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

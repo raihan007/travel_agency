@@ -97,6 +97,50 @@ class Booking extends CI_Controller {
 		}
 	}
 
+	public function Reservation($id = 0)
+	{	
+		$data['title'] = 'Reserved a Package';
+		$data['NextEntityNo'] = $this->PackageModel->Get_Next_Entity_No('packages_booking_info');
+		if($this->session->userdata('UserRole') === 'Client') {
+			$data['Booking'] = $this->BookingModel->Get_By_ID($id);
+			$data['Package'] = $this->PackageModel->Get_Details($data['Booking']['PackageId']);
+			$data['Client'] = $this->ClientModel->Get_Details($data['Booking']['ClientId']);
+			$data['TotalCost'] = (1 * $data['Package']['Cost'])-($data['Package']['Discount']/100);
+			if(!$this->input->post('Reserved'))
+			{
+				$data['message'] = '';
+				$this->load->view('Booking/reservation_view', $data);
+			}
+			else
+			{
+				if($this->form_validation->run('ClientBookingInfoForm'))
+				{
+					$Data = array(
+						'PackageId' => $this->input->post('PackageId'),
+						'Quantity' => $this->input->post('Quantity'),
+						'ClientId' => $this->input->post('ClientId'),
+					    'TotalCost' => $this->input->post('TotalCost'),
+					    'Date' => $this->input->post('BookingDate')
+					);
+					$Status = $this->BookingModel->Add_New_Booking_info($Data);
+			        if($Status){
+					    	$this->session->set_flashdata('success', 'Data added successfully.');
+					}else{
+					    	$this->session->set_flashdata('error', 'Some problems occured, please try again.');
+					}
+					redirect(base_url('Client/Index'));
+				}
+				else
+				{
+					$data['message'] = validation_errors();
+					$this->load->view('Booking/reservation_view', $data);
+				}
+			}
+		}else{
+			redirect('Home');
+		}
+	}
+
 	public function edit($id = 0)
 	{	
 		$data['title'] = 'Update Booking Details';

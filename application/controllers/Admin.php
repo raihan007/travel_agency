@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Admin extends CI_Controller {
+class Admin extends MY_Controller {
 
 	function __construct() {
 		parent::__construct();
@@ -8,24 +8,33 @@ class Admin extends CI_Controller {
 	}
 
 	public function Index()
-	{	
+	{
+		$this->data['PageHeader'] = 'Dashboard';	
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$userInfo = $this->AdminModel->Get_By_ID($this->session->userdata('UserId'));
-			//$data['EntityNo'] = $userInfo['EntityNo'];
-			$data['FullName'] = $userInfo['FirstName'].' '.$userInfo['LastName'];
-			$data['LastLoginTime'] = $this->AdminModel->Get_Last_Login_By_ID($this->session->userdata('UserId'));
-			$this->load->view('Admin/home_view',$data);
+			$this->SetSessionData();
+			$this->render('Admin/home_view','master');
+			//$this->load->view('Admin/home_view',$data);
 		}
 		else{
 			redirect('Home');
 		}
 	}
 
+	private function SetSessionData(){
+		$userInfo = $this->AdminModel->Get_By_ID($this->session->userdata('UserId'));
+		$this->session->set_userdata('EntityNo', $userInfo['EntityNo']);
+		$FullName = $userInfo['FirstName'].' '.$userInfo['LastName'];
+		$LastLoginTime = $this->AdminModel->Get_Last_Login_By_ID($this->session->userdata('UserId'));
+		$this->session->set_userdata('LastLoginTime', $LastLoginTime);
+		$this->session->set_userdata('FullName', $FullName);
+	}
+
 	public function Profile(){
-		$data['title'] = "Profile";
+		$this->data['PageHeader'] = "Profile";
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['Employee'] = $this->AdminModel->Get_By_ID($this->session->userdata('UserId'));
-			$this->load->view('Admin/profile_view',$data);
+			$this->data['Employee'] = $this->AdminModel->Get_By_ID($this->session->userdata('UserId'));
+			$this->render('Admin/profile_view','master');
+			//$this->load->view('Admin/profile_view',$data);
 		}
 		else{
 			redirect('Home');
@@ -33,11 +42,10 @@ class Admin extends CI_Controller {
 	}
 
 	public function UpdateProfile($EntityNo = 0){
-		$data['title'] = "Profile";
+		$this->data['PageHeader'] = "Update Profile Info.";
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['title'] = 'Update Client Details';
-			$data['message'] = '';
-			$data['BloodGroupList'] = array(
+			$this->data['message'] = '';
+			$this->data['BloodGroupList'] = array(
 				' '   => 'Select Your Blood Group',
 				'A+'  => 'A+',
 				'A-'  => 'A-',
@@ -48,17 +56,18 @@ class Admin extends CI_Controller {
 				'O+'  => 'O+',
 				'O-'  => 'O-',
 			);
-			$data['ClientTypeList'] = array(
+			$this->data['ClientTypeList'] = array(
 				' '   => 'Select Type',
 				'Regular'  => 'Regular',
 				'Premium'  => 'Premium',
 				'Royal'  => 'Royal',
 			);
-			$data['Client'] = $this->AdminModel->Get_By_ID($this->session->userdata('UserId'));
+			$this->data['Client'] = $this->AdminModel->Get_By_ID($this->session->userdata('UserId'));
 
 			if(!$this->input->post('Update'))
 			{
-				$this->load->view('Admin/edit_profile_view',$data);
+				$this->render('Admin/edit_profile_view','master');
+				//$this->load->view('Admin/edit_profile_view',$data);
 			}
 			else
 			{
@@ -108,11 +117,12 @@ class Admin extends CI_Controller {
 					    	$this->session->set_flashdata('error', 'Some problems occured, please try again.');
 					}
 
-					redirect(base_url('Client/AllClients'));
+					redirect(base_url('Profile'));
 				}
 
-				$data['message'] = validation_errors();
-				$this->load->view('Admin/edit_profile_view',$data);
+				$this->data['message'] = validation_errors();
+				$this->render('Admin/edit_profile_view','master');
+				//$this->load->view('Admin/edit_profile_view',$data);
 			}
 		}else
 		{

@@ -33,6 +33,33 @@ class PackageModel extends MY_Model {
 		}
 	}
 
+	public function GetAll()
+	{
+		$allPackages = array();
+		$allPackagesWithImages = array();
+		$this->db->select();
+		$this->db->from('packages_info');
+		$this->db->where_not_in('IsDeleted', 1);
+		$this->db->order_by('EntityNo', 'ASC');
+		$result = $this->db->get();
+		if($result->num_rows() > 0)
+		{
+			$allPackages = $result->result_array();
+			foreach ($allPackages as $package){
+				if($package['Gallery'] == 1){
+					$package['Photos'] = explode(",",$this->Get_Images($package['ID']));
+				}
+				array_push($allPackagesWithImages,$package);
+			}
+		}
+		else 
+		{
+			$allPackagesWithImages;
+		}
+		//print_r($allPackagesWithImages);
+		return $allPackagesWithImages;
+	}
+
 	public function Get_Packages_List($limit = 0, $offset = 0)
 	{
 		$sql = "SELECT * FROM packages_info WHERE NOT IsDeleted=1 AND BookingLastDate >= NOW() ORDER BY EntityNo LIMIT $limit OFFSET $offset";

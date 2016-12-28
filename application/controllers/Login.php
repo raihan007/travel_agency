@@ -1,22 +1,23 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Login extends CI_Controller{
+class Login extends MY_Controller{
 
 	function __construct() {
 		parent::__construct();
 		$this->load->model('LoginModel');
 		$this->load->library('UniqueKey');
+		$this->data['page_title'] = "Dream Travel";
 	}
 
 	public function Index(){
-
 		if($this->session->userdata('UserId')) {
 			redirect('Home');
 		}else{
 			if(!$this->input->post('signin'))
 			{
-				$data['message'] = '';
-				$this->load->view('Login/Login_View', $data);
+				$this->data['message'] = '';
+				$this->render('Login/Login_View','public');
+				//$this->load->view('Login/Login_View', $data);
 			}
 			else
 			{
@@ -28,14 +29,14 @@ class Login extends CI_Controller{
 					if($user){
 						redirect(base_url('Home'));
 					}else{
-						$data['message'] = "Invalid Username or Password !";
-						$this->load->view('Login/Login_View', $data);
+						$this->data['message'] = "Invalid Username or Password !";
+						$this->render('Login/Login_View','public');
 					}
 				}
 				else
 				{
-					$data['message'] = validation_errors();
-					$this->load->view('Login/Login_View', $data);
+					$this->data['message'] = validation_errors();
+					$this->render('Login/Login_View','public');
 				}
 			}
 		}
@@ -50,28 +51,28 @@ class Login extends CI_Controller{
 
 	public function SignUp(){
 
-		$data['BloodGroupList'] = array(
-					' ' => 'Select Your Blood Group',
-					'A+' => 'A+',
-					'A-' => 'A-',
-					'B+' => 'B+',
-					'B-' => 'B-',
-					'AB+' => 'AB+',
-					'AB-' => 'AB-',
-					'O+' => 'O+',
-					'O-' => 'O-',
-				);
+		$this->data['BloodGroupList'] = array(
+			' ' => 'Select Your Blood Group',
+			'A+' => 'A+',
+			'A-' => 'A-',
+			'B+' => 'B+',
+			'B-' => 'B-',
+			'AB+' => 'AB+',
+			'AB-' => 'AB-',
+			'O+' => 'O+',
+			'O-' => 'O-',
+		);
 
-		$data['NextEntityNo'] = $this->LoginModel->Get_Next_Entity_No('users_info');
+		$this->data['NextEntityNo'] = $this->LoginModel->Get_Next_Entity_No('users_info');
 
 		if(!$this->input->post('SignUp'))
 		{
-			$data['message'] = '';
-			$this->load->view('Login/SignUp_View', $data);
+			$this->data['message'] = '';
+			$this->render('Login/SignUp_View','public');
 		}
 		else
 		{
-			if($this->form_validation->run('ClientInfoForm'))
+			if($this->form_validation->run('SignUpForm'))
 			{
 				$UserId = $this->uniquekey->GUID();
 				$uploadData['file_name'] = "";
@@ -105,14 +106,16 @@ class Login extends CI_Controller{
 			      	'BloodGroup' => $this->input->post('BloodGroup'),
 			      	'NationalIdNo' => $this->input->post('NationalIdNo'),
 			     	'Username' => $this->input->post('Username'),
-			      	'Password' => $this->encrypt->encode($this->input->post('Password'))
+			      	'Password' => $this->encrypt->encode($this->input->post('Password')),
+			      	'Role' => 'default',
+			      	'Type' => 'default'
 				);
 
 				$status = $this->LoginModel->Add_New_Client($clientData);
 
 				//Storing insertion status message.
 		        if($status){
-				    	$this->session->set_flashdata('success', 'Your account uccessfully created. Now you can login your account.');
+				    	$this->session->set_flashdata('success', 'Your account successfully created. Now you can login your account.');
 				}else{
 				    	$this->session->set_flashdata('error', 'Some problems occured, please try again.');
 				}
@@ -121,8 +124,8 @@ class Login extends CI_Controller{
 			}
 			else
 			{
-				$data['message'] = validation_errors();
-				$this->load->view('Login/SignUp_View', $data);
+				$this->data['message'] = validation_errors();
+				$this->render('Login/SignUp_View','public');
 			}
 		}
 	}

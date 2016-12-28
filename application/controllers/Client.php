@@ -1,10 +1,13 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Client extends CI_Controller {
+class Client extends MY_Controller {
 
 	function __construct() {
 		parent::__construct();
 		$this->load->model('ClientModel');
+		$this->load->model('PackageModel');
+		$this->load->model('BookingModel');
+		$this->load->model('AdminModel');
 		$this->load->library('UniqueKey');
 	}
 
@@ -13,24 +16,148 @@ class Client extends CI_Controller {
 		echo date("Y-m-d H:i:s");
 	}
 
-	public function index()
-	{	
-		$data['title'] = 'Client Panel';
+	public function index($offset = 0)
+	{
+		$this->data['title'] = 'Client Panel';
 		if($this->session->userdata('UserRole') === 'Client') {
 			$ClientInfo = $this->ClientModel->Get_By_ID($this->session->userdata('UserId'));
 
-			$data['FullName'] = $ClientInfo['FirstName'].' '.$ClientInfo['LastName'];
-			$data['LastLoginTime'] = $this->ClientModel->Get_Last_Login_By_ID($this->session->userdata('UserId'));
-			$this->load->view('Client/home_view',$data);
+			$this->load->library('pagination');
+			$Total = $this->PackageModel->Get_Total_Rows(array(), 'packages_info');
+			$config = $this->Config_Pagination('Client/index/',$Total);
+			$this->data['PackageList'] = $this->PackageModel->Get_Packages_List($config['per_page'],$offset);
+			$this->pagination->initialize($config);
+			$this->data['ClientId'] = $ClientInfo['UserId'];
+			$this->data['FullName'] = $ClientInfo['FirstName'].' '.$ClientInfo['LastName'];
+			$this->data['LastLoginTime'] = $this->ClientModel->Get_Last_Login_By_ID($this->session->userdata('UserId'));
+			$this->data['PerPage'] = $config['per_page'];
+			$this->load->view('Client/home_view',$this->data);
 		}
 		else{
 			redirect('Home');
 		}
 	}
 
+	public function AllReservation($id = '')
+	{
+		$this->data['title'] = 'Client All Reservation';
+		if($this->session->userdata('UserId') === $id) {
+			$ClientInfo = $this->ClientModel->Get_By_ID($this->session->userdata('UserId'));
+
+			$this->data['ClientBookingList'] = $this->BookingModel->Get_Client_Booking_List($ClientInfo['UserId']);
+			$this->data['ClientId'] = $ClientInfo['UserId'];
+			$this->data['FullName'] = $ClientInfo['FirstName'].' '.$ClientInfo['LastName'];
+
+			$this->load->view('Client/client_reservation_view',$this->data);
+		}
+		else{
+			redirect('Home');
+		}
+	}
+
+	public function Profile(){
+		$this->data['title'] = "Profile";
+		if($this->session->userdata('UserRole') === 'Client') {
+			$this->data['Employee'] = $this->AdminModel->Get_By_ID($this->session->userdata('UserId'));
+			$this->load->view('Client/profile_view',$this->data);
+		}
+		else{
+			redirect('Home');
+		}
+	}
+
+	public function UpdateProfile($EntityNo = 0){
+		$this->data['title'] = "Profile";
+		if($this->session->userdata('UserRole') === 'Client') {
+			$this->data['title'] = 'Update Client Details';
+			$this->data['message'] = '';
+			$this->data['BloodGroupList'] = array(
+				' '   => 'Select Your Blood Group',
+				'A+'  => 'A+',
+				'A-'  => 'A-',
+				'B+'  => 'B+',
+				'B-'  => 'B-',
+				'AB+' => 'AB+',
+				'AB-' => 'AB-',
+				'O+'  => 'O+',
+				'O-'  => 'O-',
+			);
+			$this->data['ClientTypeList'] = array(
+				' '   => 'Select Type',
+				'Regular'  => 'Regular',
+				'Premium'  => 'Premium',
+				'Royal'  => 'Royal',
+			);
+			$this->data['Client'] = $this->AdminModel->Get_By_ID($this->session->userdata('UserId'));
+
+			if(!$this->input->post('Update'))
+			{
+				$this->load->view('Client/edit_profile_view',$this->data);
+			}
+			else
+			{
+				if($this->form_validation->run('EditClientInfoForm'))
+				{
+					$UserId = $this->data['Client']['UserId'];
+					$uploadData['file_name'] = $this->data['Client']['Photo'];
+					if (!empty($_FILES['Photo']['name'])) {
+						$this->load->library('upload');
+						$config = array(
+							'upload_path' => "Public/Photos/Clients",
+							'allowed_types' => "jpg|png|jpeg",
+							'overwrite' => TRUE,
+							'max_size' => "2048000",
+							'max_height' => "1000",
+							'max_width' => "1600",
+							'file_name' => $UserId.'.jpg'
+						);
+						$this->upload->initialize($config);
+						$this->upload->do_upload('Photo');
+						$uploadData = $this->upload->data();
+					}
+					
+					$clientData = array(
+						'UserId' => $UserId,
+						'EntityNo' => $this->input->post('EntityNo'),
+						'FirstName' => $this->input->post('FirstName'),
+				        'LastName' => $this->input->post('LastName'),
+				      	'Gender' => $this->input->post('Gender'),
+				      	'Email' => $this->input->post('Email'),
+				       	'Photo' => $uploadData['file_name'],
+				       	'PermanentAddress' => $this->input->post('PermanentAddress'),
+				     	'PresentAddress' => $this->input->post('PresentAddress'),
+				      	'PhoneNo' => $this->input->post('PhoneNo'),
+				       	'Birthdate' => $this->input->post('Birthdate'),
+				      	'BloodGroup' => $this->input->post('BloodGroup'),
+				      	'NationalIdNo' => $this->input->post('NationalIdNo'),
+				      	'Type' => $this->input->post('Type')
+					);
+
+					$status = $this->ClientModel->Update_Client_Info($clientData);
+
+					//Storing insertion status message.
+			        if($status){
+					    	$this->session->set_flashdata('success', 'Data updated Successfully.');
+					}else{
+					    	$this->session->set_flashdata('error', 'Some problems occured, please try again.');
+					}
+
+					redirect(base_url('Client/Profile/'.$EntityNo));
+				}
+
+				$this->data['message'] = validation_errors();
+				$this->load->view('Admin/edit_profile_view',$this->data);
+			}
+		}else
+		{
+			redirect('Home');
+		}
+	}
+
 	public function AllClients($offset = 0)
 	{
-		$data['message'] = '';
+		$this->data['PageHeader'] = 'All Clients Info.';
+		$this->data['message'] = '';
 		$Search = array();
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->load->library('pagination');
@@ -45,7 +172,7 @@ class Client extends CI_Controller {
 						$column => $value
 					);
 				}else{
-					$data['message'] = validation_errors();
+					$this->data['message'] = validation_errors();
 				}
 			}
 			$Total = $this->ClientModel->Get_Total_Rows($Search,'users_info');
@@ -53,14 +180,37 @@ class Client extends CI_Controller {
 			$config['first_link'] = 'First';
 			$config['last_link'] = 'Last';
 			$this->pagination->initialize($config);
-			$data['ClientList'] = $this->ClientModel->GET($Search,$config['per_page'],$offset);
-			$data['Total'] = $Total;
-			$data['PerPage'] = $config['per_page'];
-			$this->load->view('Client/clients_view',$data);
+			$this->data['ClientList'] = $this->ClientModel->GET($Search,$config['per_page'],$offset);
+			$this->data['Total'] = $Total;
+			$this->data['PerPage'] = $config['per_page'];
+			$this->render('Client/clients_view','master');
+			//$this->load->view('Client/clients_view',$this->data);
 		}else{
 			redirect('Home');
 		}
 	}
+
+	//Start Json Data Return Methods
+	public function ClientsInfo_json()
+	{
+		$Total = $this->ClientModel->Get_Total_Rows(array(),'users_info');
+		if(isset($_REQUEST['search']) && isset($_REQUEST['type'])){
+        	$search = $_REQUEST['search'];
+        	$type = $_REQUEST['type'];
+    	}else{
+        	$search = '';
+        	$type = '';
+    	}
+		$sort =$_REQUEST['sort'];
+		$order = $_REQUEST['order'];
+		$offset = $_REQUEST['offset'];
+		$limit = $_REQUEST['limit'];
+		
+		$Alldata['rows'] = $this->ClientModel->GetAllClient($type,$search,$sort,$order,$limit,$offset);
+		$Alldata['total'] = $Total;
+		echo json_encode($Alldata);
+	}
+	//End Json Data Return Methods
 
 	private function Config_Pagination($BaseUrl='',$Total=''){
 		$config = array();
@@ -82,9 +232,9 @@ class Client extends CI_Controller {
 
 	public function Add()
 	{
-		$data['title'] = "Add Client Details";
+		$this->data['title'] = "Add Client Details";
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['BloodGroupList'] = array(
+			$this->data['BloodGroupList'] = array(
 				' ' => 'Select Your Blood Group',
 				'A+' => 'A+',
 				'A-' => 'A-',
@@ -96,19 +246,19 @@ class Client extends CI_Controller {
 				'O-' => 'O-',
 			);
 
-			$data['ClientTypeList'] = array(
+			$this->data['ClientTypeList'] = array(
 				' ' => 'Select Client Type',
 				'Regular'  => 'Regular',
 				'Premium'  => 'Premium',
 				'Royal'  => 'Royal',
 			);
 
-			$data['NextEntityNo'] = $this->ClientModel->Get_Next_Entity_No('users_info');
+			$this->data['NextEntityNo'] = $this->ClientModel->Get_Next_Entity_No('users_info');
 
 			if(!$this->input->post('AddClient'))
 			{
-				$data['message'] = '';
-				$this->load->view('Client/add_view', $data);
+				$this->data['message'] = '';
+				$this->load->view('Client/add_view', $this->data);
 			}
 			else
 			{
@@ -162,8 +312,8 @@ class Client extends CI_Controller {
 				}
 				else
 				{
-					$data['message'] = validation_errors();
-					$this->load->view('Client/add_view', $data);
+					$this->data['message'] = validation_errors();
+					$this->load->view('Client/add_view', $this->data);
 				}
 			}
 		}else{
@@ -174,11 +324,11 @@ class Client extends CI_Controller {
 	public function Details($EntityNo)
 	{
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['title'] = "Client Details";
+			$this->data['title'] = "Client Details";
 		
-			$data['Client'] = $this->ClientModel->Get_Where($EntityNo);
+			$this->data['Client'] = $this->ClientModel->Get_Where($EntityNo);
 
-			$this->load->view('Client/details_view',$data);
+			$this->load->view('Client/details_view',$this->data);
 		}else{
 			redirect('Home');
 		}
@@ -187,9 +337,9 @@ class Client extends CI_Controller {
 	public function Edit($EntityNo)
 	{
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['title'] = 'Update Client Details';
-			$data['message'] = '';
-			$data['BloodGroupList'] = array(
+			$this->data['title'] = 'Update Client Details';
+			$this->data['message'] = '';
+			$this->data['BloodGroupList'] = array(
 				' '   => 'Select Your Blood Group',
 				'A+'  => 'A+',
 				'A-'  => 'A-',
@@ -200,24 +350,24 @@ class Client extends CI_Controller {
 				'O+'  => 'O+',
 				'O-'  => 'O-',
 			);
-			$data['ClientTypeList'] = array(
+			$this->data['ClientTypeList'] = array(
 				' '   => 'Select Client Type',
 				'Regular'  => 'Regular',
 				'Premium'  => 'Premium',
 				'Royal'  => 'Royal',
 			);
-			$data['Client'] = $this->ClientModel->Get_Where($EntityNo);
+			$this->data['Client'] = $this->ClientModel->Get_Where($EntityNo);
 
 			if(!$this->input->post('Update'))
 			{
-				$this->load->view('Client/edit_view',$data);
+				$this->load->view('Client/edit_view',$this->data);
 			}
 			else
 			{
 				if($this->form_validation->run('EditClientInfoForm'))
 				{
-					$UserId = $data['Client']['UserId'];
-					$uploadData['file_name'] = $data['Client']['Photo'];
+					$UserId = $this->data['Client']['UserId'];
+					$uploadData['file_name'] = $this->data['Client']['Photo'];
 					if (!empty($_FILES['Photo']['name'])) {
 						$this->load->library('upload');
 						$config = array(
@@ -263,8 +413,8 @@ class Client extends CI_Controller {
 					redirect(base_url('Client/AllClients'));
 				}
 
-				$data['message'] = validation_errors();
-				$this->load->view('Client/edit_view',$data);
+				$this->data['message'] = validation_errors();
+				$this->load->view('Client/edit_view',$this->data);
 			}
 		}else
 		{
@@ -275,18 +425,18 @@ class Client extends CI_Controller {
 	public function Remove($EntityNo)
 	{
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['title'] = "Client Details";
+			$this->data['title'] = "Client Details";
 		
-			$data['Client'] = $this->ClientModel->Get_Where($EntityNo);
+			$this->data['Client'] = $this->ClientModel->Get_Where($EntityNo);
 
 			if($this->input->post('Remove'))
 			{
-				$Data = array(
-					'EntityNo' => $data['Client']['EntityNo'],
+				$this->data = array(
+					'EntityNo' => $this->data['Client']['EntityNo'],
 					'IsDeleted' => 1,
-					'UserId' => $data['Client']['UserId'], 
+					'UserId' => $this->data['Client']['UserId'], 
 				);
-				$Status = $this->ClientModel->Delete_Client_info($Data);
+				$Status = $this->ClientModel->Delete_Client_info($this->data);
 				if($Status){
 					$this->session->set_flashdata('success', 'Data successfully deleted.');
 				}else{
@@ -294,7 +444,7 @@ class Client extends CI_Controller {
 				}
 				redirect(base_url('Client/AllClients'));
 			}else{
-				$this->load->view('Client/remove_view',$data);
+				$this->load->view('Client/remove_view',$this->data);
 			}
 		}else{
 			redirect('Home');

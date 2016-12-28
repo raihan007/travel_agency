@@ -21,6 +21,21 @@ class BookingModel extends MY_Model {
 		}
 	}
 
+	public function Get_Client_Booking_List($id = '')
+	{
+		$sql = "SELECT * FROM booking_info_view WHERE ClientId='$id' ORDER BY EntityNo";
+		$result = $this->db->query($sql);
+		
+		if($result->num_rows() > 0)
+		{
+			return $result->result_array();
+		}
+		else 
+		{
+			return array();
+		}
+	}
+
 	public function GET($SearchKey = array(),$perpage = 0, $page = 0)
 	{
 		$page = $page-1;

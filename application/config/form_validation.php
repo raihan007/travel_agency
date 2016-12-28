@@ -13,6 +13,78 @@ $config = array (
 								'rules' => 'required',
 						)
 				   ),
+	'SignUpForm' => array(
+						array(
+								'field' => 'EntityNo',
+								'label' => 'Entity No',
+								'rules' => 'trim|required',
+						),
+						array(
+								'field' => 'FirstName',
+								'label' => 'First Name',
+								'rules' => 'trim|required',
+						),
+						array(
+								'field' => 'LastName',
+								'label' => 'Last Name',
+								'rules' => 'trim|required|alpha',
+						),
+						array(
+								'field' => 'Gender',
+								'label' => 'Gender',
+								'rules' => 'trim|required',
+						),
+						array(
+								'field' => 'Email',
+								'label' => 'Email',
+								'rules' => 'trim|required|valid_email|check_unique[users_access.Email.EntityNo]',
+						),
+						array(
+								'field' => 'PermanentAddress',
+								'label' => 'Permanent Address',
+								'rules' => 'trim|required',
+						),
+						array(
+								'field' => 'PresentAddress',
+								'label' => 'Present Address',
+								'rules' => 'trim|required',
+						),
+						array(
+								'field' => 'PhoneNo',
+								'label' => 'Phone No',
+								'rules' => 'trim|required',
+						),
+						array(
+								'field' => 'Birthdate',
+								'label' => 'Date of Birth',
+								'rules' => 'trim|required|is_valid_date',
+						),
+						array(
+								'field' => 'BloodGroup',
+								'label' => 'Blood group',
+								'rules' => 'trim|required',
+						),
+						array(
+								'field' => 'NationalIdNo',
+								'label' => 'National Id No',
+								'rules' => 'trim|required',
+						),
+						array(
+								'field' => 'Username',
+								'label' => 'Username',
+								'rules' => 'trim|required|min_length[5]|check_unique[users_access.Username.EntityNo]',
+						),
+						array(
+								'field' => 'Password',
+								'label' => 'Password',
+								'rules' => 'trim|required|min_length[8]|max_length[10]|password_check[1,1,1,1]',
+						),
+						array(
+								'field' => 'ConfirmPassword',
+								'label' => 'Confirm Password',
+								'rules'   => 'trim|required|matches[Password]'
+						),
+				   ),
 	'ClientInfoForm' => array(
 						array(
 								'field' => 'EntityNo',
@@ -37,7 +109,7 @@ $config = array (
 						array(
 								'field' => 'Email',
 								'label' => 'Email',
-								'rules' => 'trim|required|valid_email|check_unique[users_info.Email.EntityNo]',
+								'rules' => 'trim|required|valid_email|check_unique[users_access.Email.EntityNo]',
 						),
 						array(
 								'field' => 'PermanentAddress',
@@ -114,7 +186,7 @@ $config = array (
 						array(
 								'field' => 'Email',
 								'label' => 'Email',
-								'rules' => 'trim|required|valid_email|check_unique[users_info.Email.EntityNo]',
+								'rules' => 'trim|required|valid_email|check_unique[users_access.Email.EntityNo]',
 						),
 						array(
 								'field' => 'PermanentAddress',
@@ -226,6 +298,38 @@ $config = array (
 								'rules' => 'trim|required'
 						),
 					),
+	'ClientBookingInfoForm' => array(
+						array(
+								'field' => 'EntityNo',
+								'label' => 'Entity No',
+								'rules' => 'trim|required|integer',
+						),
+						array(
+								'field' => 'Cost',
+								'label' => 'Cost',
+								'rules' => 'trim|required|Is_Float',
+						),
+						array(
+								'field' => 'Quantity',
+								'label' => 'Quantity',
+								'rules' => 'trim|required|integer',
+						),
+						array(
+								'field' => 'TotalCost',
+								'label' => 'Total Cost',
+								'rules' => 'trim|required|Is_Float'
+						),
+						array(
+								'field' => 'Discount',
+								'label' => 'Discount',
+								'rules' => 'trim|required|Is_Float'
+						),
+						array(
+								'field' => 'BookingDate',
+								'label' => 'Date of booking',
+								'rules' => 'trim|required|is_valid_date',
+						)
+					),
 	'ChangePasswordForm' => array(
 						array(
 								'field' => 'OldPassword',
@@ -247,12 +351,12 @@ $config = array (
 						array(
 								'field' => 'OldUsername',
 								'label' => 'Old username',
-								'rules' => 'trim|required|min_length[8]|max_length[10]',
+								'rules' => 'trim|required|min_length[5]|max_length[10]',
 						),
 						array(
 								'field' => 'NewUsername',
 								'label' => 'New username',
-								'rules' => 'trim|required|min_length[8]|max_length[10]',
+								'rules' => 'trim|required|min_length[5]|max_length[10]',
 						),
 						array(
 								'field' => 'ConfirmUsername',

@@ -1,91 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Admin Panel</title>
-	<style type="text/css">
-	.menu{
-		font-size: 18px;
-	}
-	.logout{
-		color: red;
-	}
-	</style>
-</head>
-<body>
-	<table border="1" style="text-align: center;" align="center">
-		<tr><td><h1>Welcome</h1></td></tr>
-		<?php  if( $notif = $this->session->flashdata('success')): ?>
-        <tr>
-            <td style="color: blue;" colspan="8"><strong><?= $notif ?></strong></td>
-       	</tr>
-      	<?php endif; ?>
-      	<?php  if( $notif = $this->session->flashdata('error')): ?>
-     	<tr>
-          	<td style="color: red;" colspan="8"><strong><?= $notif ?></strong></td>
-      	</tr>
-       	<?php endif; ?>
-		<tr><td><h3>User Name : <?= $FullName ?></h3></td></tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Client/AllClients">All Clients Information</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Client/Add">Add New Client Information</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Packages/AllPackages">All Package Information</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Packages/Add">Add New Packages</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Booking/AllBooking">All Booking Information</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Booking/Add">Add New Booking</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Report/Booking">Package Booking Report</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Report/Sales">Sales Report</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Admin/Profile">Profile</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Settings/ChangeUsername">Change Username</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<a href="/travel_agency/Settings/ChangePassword">Change Password</a>
-			</td>
-		</tr>
-		<tr>
-			<td class="menu">
-				<strong><a class="logout" href="/travel_agency/Login/Logout">Logout</a></strong>
-			</td>
-		</tr>
-		<tr><td>Last Login: <?= $LastLoginTime ?></td></tr>
-	</table>
-</body>
-</html>
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-comments fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">26</div>
+                                    <div>New Comments!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-tasks fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">12</div>
+                                    <div>New Tasks!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-shopping-cart fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">124</div>
+                                    <div>New Orders!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-support fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">13</div>
+                                    <div>Support Tickets!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+<div class="row">
+	<div class="col-md-12">
+		
+	</div>
+</div>
