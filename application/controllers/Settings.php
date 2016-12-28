@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Settings extends CI_Controller {
+class Settings extends MY_Controller {
 
 	function __construct() {
 		parent::__construct();
@@ -10,8 +10,8 @@ class Settings extends CI_Controller {
 
 	public function ChangePassword()
 	{	
-		$data['title'] = 'Change Password';
-		$data['message'] = '';
+		$this->data['PageHeader'] = 'Change Password';
+		$this->data['message'] = '';
 		if($this->session->userdata('UserId')) {
 			if($this->input->post('ChangePassword'))
 			{
@@ -33,13 +33,15 @@ class Settings extends CI_Controller {
 						}
 						redirect('Home');
 					}else{
-						$data['message'] = "Please insert current password";
+						$this->data['message'] = "Please insert current password";
 					}
 				}else{
-					$data['message'] = validation_errors();
+					/*print_r(validation_errors());
+					exit;*/
+					$this->data['message'] = validation_errors();
 				}
 			}
-			$this->load->view('Common/change_password_view',$data);
+			$this->render('Common/change_password_view','master');
 		}
 		else{
 			redirect('Home');
@@ -48,9 +50,9 @@ class Settings extends CI_Controller {
 
 	public function ChangeUsername()
 	{	
-		$data['title'] = 'Change Username';
-		$data['message'] = '';
-		$data['Username'] = $this->session->userdata('UserName');
+		$this->data['PageHeader'] = 'Change Username';
+		$this->data['message'] = '';
+		$this->data['Username'] = $this->session->userdata('UserName');
 		if($this->session->userdata('UserId')) {
 			if($this->input->post('ChangeUsername'))
 			{
@@ -70,13 +72,13 @@ class Settings extends CI_Controller {
 						}
 						redirect('Home');
 					}else{
-						$data['message'] = "Please insert your current username";
+						$this->data['message'] = "Please insert your current username";
 					}
 				}else{
-					$data['message'] = validation_errors();
+					$this->data['message'] = validation_errors();
 				}
 			}
-			$this->load->view('Common/change_username_view',$data);
+			$this->render('Common/change_username_view','master');
 		}
 		else{
 			redirect('Home');

@@ -145,9 +145,17 @@ class PackageModel extends MY_Model {
 
 	public function Get_By_ID($Id = 0)
 	{
-		$sql = "SELECT * FROM packages_info WHERE EntityNo=$Id";
-		$result = $this->db->query($sql);
+		$where = array(
+			'EntityNo' => $Id,
+			'IsDeleted' => '0'
+		);
 
+		$result = $this->db
+					->select()
+					->from('packages_info')
+					->where($where)
+					->get();
+					
 		if($result->num_rows() === 1)
 		{
 			return $result->row_array();
@@ -175,9 +183,19 @@ class PackageModel extends MY_Model {
 
 	public function Get_Images($Id = '')
 	{
-		$sql = "SELECT GROUP_CONCAT(packages_photos_info.FileName) AS 'Images' FROM packages_photos_info WHERE packages_photos_info.ID='$Id' GROUP BY packages_photos_info.ID";
-		$result = $this->db->query($sql);
+		/*$sql = "SELECT GROUP_CONCAT(packages_photos_info.FileName) AS 'Images' FROM packages_photos_info WHERE packages_photos_info.ID='$Id' GROUP BY packages_photos_info.ID";*/
 
+		$where = array(
+			'packages_photos_info.ID' => $Id
+		);
+		
+		$result = $this->db
+					->select("GROUP_CONCAT(packages_photos_info.FileName) AS 'Images'")
+					->from('packages_photos_info')
+					->where($where)
+					->group_by('packages_photos_info.ID')
+					->get();
+		//echo $this->db->last_query();exit();			
 		if($result->num_rows() === 1)
 		{
 			return $result->row()->Images;
@@ -191,8 +209,19 @@ class PackageModel extends MY_Model {
 	public function Add_New_Package_Info($PackageData = array())
 	{
 		extract($PackageData);
-		$sql = "INSERT INTO packages_info  VALUES (null,'$ID','$Title',$Gallery,$Cost,'$Type',$Discount,'$Remarks','$BookingLastDate',DEFAULT)";
-		$insert = $this->db->query($sql);
+
+		$Data = array(
+			'ID' => $ID,
+			'Title' => $Title,
+			'Gallery' => $Gallery,
+			'Cost' => $Cost,
+			'Type' => $Type,
+			'Discount' => $Discount,
+			'Remarks' => $Remarks,
+			'BookingLastDate' => $BookingLastDate
+		);
+
+		$insert = $this->db->insert('packages_info',$Data);
         if($insert){
             return true;
         }

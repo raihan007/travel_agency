@@ -1,4 +1,18 @@
 <div class="row">
+	<div class="col-md-12 text-center">
+		<?php  if( $notif = $this->session->flashdata('success')): ?>
+		<div class="alert alert-dismissible alert-info">
+		  <button type="button" class="close" data-dismiss="alert">&times;</button>
+		  <strong><?= $notif ?></strong>
+		</div>
+		<?php endif; ?>
+		<?php  if( $notif = $this->session->flashdata('error')): ?>
+		<div class="alert alert-dismissible alert-danger">
+		  <button type="button" class="close" data-dismiss="alert">&times;</button>
+		  <strong><?= $notif ?></strong>
+		</div>
+		<?php endif; ?>
+	</div>
 	<div class="col-md-12">
 		<dl class="dl-horizontal detailsView">
 			<dt>Entity No :</dt>

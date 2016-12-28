@@ -5,15 +5,31 @@ class Admin extends MY_Controller {
 	function __construct() {
 		parent::__construct();
 		$this->load->model('AdminModel');
+		$this->load->model('ClientModel');
 	}
 
 	public function Index()
 	{
-		$this->data['PageHeader'] = 'Dashboard';	
+		$this->data['PageHeader'] = 'Dashboard';
+		$this->data['TotalCilents'] = $this->AdminModel->GetTotalCount('users_info');
+		$this->data['TotalPackages'] = $this->AdminModel->GetTotalCount('packages_info');	
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->SetSessionData();
 			$this->render('Admin/home_view','master');
-			//$this->load->view('Admin/home_view',$data);
+			//$this->load->view('Admin/home_view',$this->data);
+		}
+		else{
+			redirect('Home');
+		}
+	}
+
+	public function Index1()
+	{
+		$this->data['PageHeader'] = 'Dashboard';	
+		if($this->session->userdata('UserRole') === 'Admin') {
+			$this->SetSessionData();
+			//$this->render('Admin/home_view','master');
+			$this->load->view('Admin/home_view1',$this->data);
 		}
 		else{
 			redirect('Home');
@@ -34,7 +50,7 @@ class Admin extends MY_Controller {
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->data['Employee'] = $this->AdminModel->Get_By_ID($this->session->userdata('UserId'));
 			$this->render('Admin/profile_view','master');
-			//$this->load->view('Admin/profile_view',$data);
+			//$this->load->view('Admin/profile_view',$this->data);
 		}
 		else{
 			redirect('Home');
@@ -67,14 +83,14 @@ class Admin extends MY_Controller {
 			if(!$this->input->post('Update'))
 			{
 				$this->render('Admin/edit_profile_view','master');
-				//$this->load->view('Admin/edit_profile_view',$data);
+				//$this->load->view('Admin/edit_profile_view',$this->data);
 			}
 			else
 			{
 				if($this->form_validation->run('EditClientInfoForm'))
 				{
-					$UserId = $data['Client']['UserId'];
-					$uploadData['file_name'] = $data['Client']['Photo'];
+					$UserId = $this->data['Client']['UserId'];
+					$uploadData['file_name'] = $this->data['Client']['Photo'];
 					if (!empty($_FILES['Photo']['name'])) {
 						$this->load->library('upload');
 						$config = array(
@@ -122,7 +138,7 @@ class Admin extends MY_Controller {
 
 				$this->data['message'] = validation_errors();
 				$this->render('Admin/edit_profile_view','master');
-				//$this->load->view('Admin/edit_profile_view',$data);
+				//$this->load->view('Admin/edit_profile_view',$this->data);
 			}
 		}else
 		{

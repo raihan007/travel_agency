@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Report extends CI_Controller {
+class Report extends MY_Controller {
 
 	function __construct() {
 		parent::__construct();
@@ -17,22 +17,24 @@ class Report extends CI_Controller {
 
 	public function Sales($offset = 0)
 	{
-		$data['title'] = 'Packages Sales Report';
-		$data['message'] = '';
+		$this->data['PageHeader'] = 'Packages Sales Report';
+		$this->data['message'] = '';
 		$Search = array();
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->load->library('pagination');
-			$Total = $this->BookingModel->Get_Total_Rows($Search,'booking_info_view');
+			$Total = $this->BookingModel->Get_Number_Of_Rows('*','booking_info_view');
 			$config = $this->Config_Pagination('Report/Sales/',$Total);
 			$this->pagination->initialize($config);
 			$PageTotal = $this->BookingModel->Get_SUM($Search,$config['per_page'],$offset);
-			$data['PageTotal'] = $PageTotal['SUM(TotalCost)'];
+			$this->data['PageTotal'] = $PageTotal['SUM(TotalCost)'];
 			$GrandTotal = $this->BookingModel->Get_SUM($Search,0,1);
-			$data['GrandTotal'] = $GrandTotal['SUM(TotalCost)'];
-			$data['BookingList'] = $this->BookingModel->GET($Search,$config['per_page'],$offset);
-			$data['Total'] = $Total;
-			$data['PerPage'] = $config['per_page'];
-			$this->load->view('Reports/sales_report_view',$data);
+			$this->data['GrandTotal'] = $GrandTotal['SUM(TotalCost)'];
+			$this->data['BookingList'] = $this->BookingModel->GetAllBokking($Search,$config['per_page'],$offset);
+			$this->data['Total'] = $Total;
+			$this->data['PerPage'] = $config['per_page'];
+
+			$this->render('Reports/sales_report_view','master');
+			//$this->load->view('Reports/sales_report_view',$this->data);
 		}else{
 			redirect('Home');
 		}
@@ -40,8 +42,8 @@ class Report extends CI_Controller {
 
 	public function Booking($offset = 0)
 	{
-		$data['title'] = 'Packages Booking Report';
-		$data['message'] = '';
+		$this->data['PageHeader'] = 'Packages Booking Report';
+		$this->data['message'] = '';
 		$Search = array();
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->load->library('pagination');
@@ -49,38 +51,20 @@ class Report extends CI_Controller {
 			$config = $this->Config_Pagination('Report/Booking/',$Total);
 			$this->pagination->initialize($config);
 
-			$data['PackageList'] = $this->PackageModel->GET_Booking_Report($Search,$config['per_page'],$offset);
-			$data['Total'] = $Total;
-			$data['PerPage'] = $config['per_page'];
-			$this->load->view('Reports/booking_report_view',$data);
+			$this->data['PackageList'] = $this->PackageModel->GET_Booking_Report($Search,$config['per_page'],$offset);
+			$this->data['Total'] = $Total;
+			$this->data['PerPage'] = $config['per_page'];
+			$this->render('Reports/booking_report_view','master');
 		}else{
 			redirect('Home');
 		}
 	}
 
-	private function Config_Pagination($BaseUrl='',$Total=''){
-		$config = array();
-		$config = [
-			'base_url' => base_url($BaseUrl),
-			'per_page' => 3,
-			'total_rows' => $Total,
-			'use_page_numbers' => TRUE,
-			'full_tag_open' => '<div id="pagination">',
-			'full_tag_close' => '</div>',
-			'cur_tag_open' => '<b>',
-			'cur_tag_close' => '</b>',
-			'next_link' => 'Next',
-			'prev_link' => 'Previous',
-			'uri_segment' => 3,
-		];
-		return $config;
-	}
-
 	public function Add()
 	{
-		$data['title'] = "Add Client Details";
+		$this->data['title'] = "Add Client Details";
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['BloodGroupList'] = array(
+			$this->data['BloodGroupList'] = array(
 				' ' => 'Select Your Blood Group',
 				'A+' => 'A+',
 				'A-' => 'A-',
@@ -92,18 +76,18 @@ class Report extends CI_Controller {
 				'O-' => 'O-',
 			);
 
-			$data['ClientTypeList'] = array(
+			$this->data['ClientTypeList'] = array(
 				'Regular'  => 'Regular',
 				'Premium'  => 'Premium',
 				'Royal'  => 'Royal',
 			);
 
-			$data['NextEntityNo'] = $this->ClientModel->Get_Next_Entity_No('users_info');
+			$this->data['NextEntityNo'] = $this->ClientModel->Get_Next_Entity_No('users_info');
 
 			if(!$this->input->post('AddClient'))
 			{
-				$data['message'] = '';
-				$this->load->view('Client/add_view', $data);
+				$this->data['message'] = '';
+				$this->load->view('Client/add_view', $this->data);
 			}
 			else
 			{
@@ -157,8 +141,8 @@ class Report extends CI_Controller {
 				}
 				else
 				{
-					$data['message'] = validation_errors();
-					$this->load->view('Client/add_view', $data);
+					$this->data['message'] = validation_errors();
+					$this->load->view('Client/add_view', $this->data);
 				}
 			}
 		}else{
@@ -168,19 +152,19 @@ class Report extends CI_Controller {
 
 	public function Details($EntityNo)
 	{
-		$data['title'] = "Client Details";
+		$this->data['title'] = "Client Details";
 		
-		$data['Client'] = $this->ClientModel->Get_Where($EntityNo);
+		$this->data['Client'] = $this->ClientModel->Get_Where($EntityNo);
 
-		$this->load->view('Client/details_view',$data);
+		$this->load->view('Client/details_view',$this->data);
 	}
 
 	public function Edit($EntityNo)
 	{
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['title'] = 'Update Client Details';
-			$data['message'] = '';
-			$data['BloodGroupList'] = array(
+			$this->data['title'] = 'Update Client Details';
+			$this->data['message'] = '';
+			$this->data['BloodGroupList'] = array(
 				' '   => 'Select Your Blood Group',
 				'A+'  => 'A+',
 				'A-'  => 'A-',
@@ -191,24 +175,24 @@ class Report extends CI_Controller {
 				'O+'  => 'O+',
 				'O-'  => 'O-',
 			);
-			$data['ClientTypeList'] = array(
+			$this->data['ClientTypeList'] = array(
 				' '   => 'Select Type',
 				'Regular'  => 'Regular',
 				'Premium'  => 'Premium',
 				'Royal'  => 'Royal',
 			);
-			$data['Client'] = $this->ClientModel->Get_Where($EntityNo);
+			$this->data['Client'] = $this->ClientModel->Get_Where($EntityNo);
 
 			if(!$this->input->post('Update'))
 			{
-				$this->load->view('Client/edit_view',$data);
+				$this->load->view('Client/edit_view',$this->data);
 			}
 			else
 			{
 				if($this->form_validation->run('EditClientInfoForm'))
 				{
-					$UserId = $data['Client']['UserId'];
-					$uploadData['file_name'] = $data['Client']['Photo'];
+					$UserId = $this->data['Client']['UserId'];
+					$uploadData['file_name'] = $this->data['Client']['Photo'];
 					if (!empty($_FILES['Photo']['name'])) {
 						$this->load->library('upload');
 						$config = array(
@@ -254,8 +238,8 @@ class Report extends CI_Controller {
 					redirect(base_url('Client/AllClients'));
 				}
 
-				$data['message'] = validation_errors();
-				$this->load->view('Client/edit_view',$data);
+				$this->data['message'] = validation_errors();
+				$this->load->view('Client/edit_view',$this->data);
 			}
 		}else
 		{

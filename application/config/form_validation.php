@@ -186,7 +186,7 @@ $config = array (
 						array(
 								'field' => 'Email',
 								'label' => 'Email',
-								'rules' => 'trim|required|valid_email|check_unique[users_access.Email.EntityNo]',
+								'rules' => 'trim|required|valid_email|check_unique[users_access.Email.UserId]',
 						),
 						array(
 								'field' => 'PermanentAddress',
@@ -252,7 +252,7 @@ $config = array (
 						),
 						array(
 								'field' => 'Remarks',
-								'label' => 'Details',
+								'label' => 'Remarks',
 								'rules' => 'trim|required|alpha_numeric_spaces|max_length[1500]'
 						),
 					),
@@ -356,7 +356,7 @@ $config = array (
 						array(
 								'field' => 'NewUsername',
 								'label' => 'New username',
-								'rules' => 'trim|required|min_length[5]|max_length[10]',
+								'rules' => 'trim|required|min_length[5]|max_length[10]|check_unique[users_access.Username.UserId]',
 						),
 						array(
 								'field' => 'ConfirmUsername',

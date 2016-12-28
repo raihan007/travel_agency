@@ -1,64 +1,71 @@
-<?php $this->load->view('Shared/header_view'); ?>
-	<form method="POST" action="" name="PackageInfoForm" enctype="multipart/form-data">
-		<table style="width: auto;" align="left" >
-			<tr>
-				<td align="center" style="color: red;" colspan="2">
-					<?php echo $message; ?>
-				</td>
-			</tr>
-			<tr>
-				<td style="text-align: center;" colspan="2"><h2>Add New Package Details</h2></td>
-			</tr>
-			<tr>
-				<td>Entity No.</td>
-				<td><input type="text" name="EntityNo" value="<?= $NextEntityNo ?>" readonly></input></td>
-			</tr>
-			<tr>
-				<td>Title</td>
-				<td><input type="text" name="Title" value="<?= set_value('Title') ?>"></input></td>
-			</tr>
-			<tr>
-				<td>Cost</td>
-				<td><input type="text" name="Cost" value="<?= set_value('Cost') ?>"></input></td>
-			</tr>
-			<tr>
-				<td>Type</td>
-				<td>
-					<select name="Type">
-						<option value="Local Tour" <?php echo set_value('Type') == 'Local Tour' ? "selected" : ""; ?>>Local Tour</option>
-						<option value="International Tour" <?php echo set_value('Type') == 'International Tour' ? "selected" : ""; ?>>International Tour</option>
-					</select>
-
-				</td>
-			</tr>
-			<tr>
-				<td>Discount</td>
-				<td><input type="text" name="Discount" value="<?= set_value('Discount') ?>"></input></td>
-			</tr>
-			<tr>
-				<td>Last Booking Date</td>
-				<td><input type="text" placeholder="YYYY-MM-DD" name="BookingLastDate" value="<?= set_value('BookingLastDate') ?>"></input></td>
-			</tr>
-			<tr>
-				<td>Photos</td>
-				<td>
-					<input type="file" name="Photos[]" onchange="PackageImages(this)" multiple></input>
-				</td>
-				<td id="Photos"></td>
-			</tr>
-			<tr>
-				<td>Details</td>
-				<td><textarea rows="10" cols="21" name="Remarks" ><?= set_value('Remarks') ?></textarea></td>
-			</tr>
-			<tr>
-				<td style="text-align: right;" >
-				<a href="/travel_agency/Packages/AllPackages">All Packages List</a>
-				</td>
-				<td>
-					<input type="submit" name="AddPackage" value="Save"></input>
-					<a href="/travel_agency/Admin">Home</a>
-				</td>
-			</tr>
-		</table>
-	</form>
-<?php $this->load->view('Shared/footer_view'); ?>
+				<div class="row">
+					<div class="col-sm-12 text-center text-danger">
+						{message}
+					</div>
+				</div>
+<div class="row">
+	<div class="col-md-8">
+		<form class="form-horizontal" method="POST" action="" name="PackageInfoForm" enctype="multipart/form-data">
+		  <fieldset>
+		    <div class="form-group">
+		      <label for="EntityNo" class="col-lg-4 control-label">Entity No.</label>
+		      <div class="col-lg-8">
+		        <input type="text" class="form-control" id="EntityNo" name="EntityNo" value="<?= $NextEntityNo ?>" readonly="readonly">
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label for="Title" class="col-lg-4 control-label">Title</label>
+		      <div class="col-lg-8">
+		        <input type="text" class="form-control" id="Title" name="Title" value="<?= set_value('Title') ?>" placeholder="Title">
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label for="Cost" class="col-lg-4 control-label">Cost</label>
+		      <div class="col-lg-8">
+		        <input type="text" class="form-control" id="Cost" name="Cost" value="<?= set_value('Cost') ?>" placeholder="Cost">
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label for="select" class="col-lg-4 control-label">Selects</label>
+		      <div class="col-lg-8">
+		        <select name="Type" class="form-control">
+					<option value="Local Tour" <?php echo set_value('Type') == 'Local Tour' ? "selected" : ""; ?>>Local Tour</option>
+					<option value="International Tour" <?php echo set_value('Type') == 'International Tour' ? "selected" : ""; ?>>International Tour</option>
+				</select>
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label for="Discount" class="col-lg-4 control-label">Discount</label>
+		      <div class="col-lg-8">
+		        <input type="text" class="form-control" id="Discount" name="Discount" value="<?= set_value('Discount') ?>" placeholder="Discount">
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label for="BookingLastDate" class="col-lg-4 control-label">Last Booking Date</label>
+		      <div class="col-lg-8">
+		        <input type="text" class="form-control datepicker" id="BookingLastDate" name="BookingLastDate" value="<?= set_value('BookingLastDate') ?>" placeholder="YYYY-MM-DD">
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label for="Photos" class="col-lg-4 control-label">Photos</label>
+		      <div class="col-lg-8">
+		        <input type="file" class="form-control" name="Photos[]" onchange="PackageImages(this)" multiple></input>
+		      </div>
+		      <div id="Photos" class="col-lg-8 col-lg-offset-2">
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label for="Remarks" class="col-lg-4 control-label">Remarks</label>
+		      <div class="col-lg-8">
+		        <textarea class="form-control" rows="3" name="Remarks" id="Remarks"></textarea>
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <div class="col-lg-8 col-lg-offset-4">
+		        <input type="submit" name="AddPackage" class="btn btn-primary" value="Save"></input>
+		      </div>
+		    </div>
+		  </fieldset>
+		</form>
+	</div>
+</div>

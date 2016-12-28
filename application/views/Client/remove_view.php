@@ -1,76 +1,43 @@
-<?php $this->load->view('Shared/header_view'); ?>
-	<table border="1" align="center">
-		<tr style="text-align: center;"><td colspan="2"><h2>Delete Client Details</h2></td></tr>
-		<tr>
-			<td style="text-align: right;">Entity No :</td>
-			<td><?= $Client['EntityNo'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">First Name :</td>
-			<td><?= $Client['FirstName'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Last Name :</td>
-			<td><?= $Client['LastName'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Gender :</td>
-			<td><?= $Client['Gender'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Photo :</td>
-			<td><img style='height: 150px; width: 150px;' src="<?php echo base_url('Public/Photos/Clients/'.$Client['Photo']); ?>" /></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Email :</td>
-			<td><?= $Client['Email'] ?></td>
-		</tr>
-
-		<tr>
-			<td style="text-align: right;">Phone No. :</td>
-			<td><?= $Client['PhoneNo'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Date of Birth :</td>
-			<td><?= $Client['Birthdate'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Permanent Address :</td>
-			<td><?= $Client['PermanentAddress'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Present Address :</td>
-			<td><?= $Client['PresentAddress'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">National Id Card No. :</td>
-			<td><?= $Client['NationalIdNo'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Blood Group :</td>
-			<td><?= $Client['BloodGroup'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">Type :</td>
-			<td><?= $Client['Type'] ?></td>
-		</tr>
-		<tr>
-			<td style="text-align: center;" colspan="2">
-				<h3>Are You Sure?</h3>
-				<form method="POST">
-					<input type="hidden" value="<?=$Client['EntityNo']?>"></input>
-					<input type="submit" name="Remove" value="Remove"></input>
-				</form>
-				<br/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<a href="/travel_agency/Client/AllClients">Back</a>
-			</td>
-			<td>
-				<a href="/travel_agency/Admin"> Home</a>
-			</td>
-		</tr>
-	</table>
-<?php $this->load->view('Shared/footer_view'); ?>
+<div class="row">
+				<div class="col-md-12">
+					<dl class="dl-horizontal detailsView">
+						<dt>Entity No :</dt>
+						<dd><?= $Client['EntityNo'] ?></dd>
+						<dt>Username :</dt>
+						<dd><?= $Client['Username'] ?></dd>
+						<dt>First Name :</dt>
+						<dd><?= $Client['FirstName'] ?></dd>
+						<dt>Last Name :</dt>
+						<dd><?= $Client['LastName'] ?></dd>
+						<dt>Gender :</dt>
+						<dd><?= $Client['Gender'] ?></dd>
+						<dt>Photo :</dt>
+						<dd><img style='height: 150px; width: 150px;' src="<?php echo base_url('Public/Photos/Clients/'.$Client['Photo']); ?>" /></dd>
+						<dt>Email :</dt>
+						<dd><?= $Client['Email'] ?></dd>
+						<dt>Phone No. :</dt>
+						<dd><?= $Client['PhoneNo'] ?></dd>
+						<dt>Date of Birth :</dt>
+						<dd><?= $Client['Birthdate'] ?></dd>
+						<dt>Permanent Address :</dt>
+						<dd><?= $Client['PermanentAddress'] ?></dd>
+						<dt>Present Address :</dt>
+						<dd><?= $Client['PresentAddress'] ?></dd>
+						<dt>National Id Card No. :</dt>
+						<dd><?= $Client['NationalIdNo'] ?></dd>
+						<dt>Blood Group :</dt>
+						<dd><?= $Client['BloodGroup'] ?></dd>
+						<dt>Type :</dt>
+						<dd><?= $Client['Type'] ?></dd>
+						<dt></dt>
+						<dd>
+							<h3>Are You Sure?</h3>
+							<form method="POST">
+								<input type="hidden" value="<?=$Client['EntityNo']?>"></input>
+								<input type="submit" class="btn btn-danger" name="Remove" value="Remove"></input>
+							</form>
+						</dd>
+					</dl>
+					
+				</div>
+			</div>

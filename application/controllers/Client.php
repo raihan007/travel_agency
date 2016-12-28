@@ -16,7 +16,7 @@ class Client extends MY_Controller {
 		echo date("Y-m-d H:i:s");
 	}
 
-	public function index($offset = 0)
+	/*public function index($offset = 0)
 	{
 		$this->data['title'] = 'Client Panel';
 		if($this->session->userdata('UserRole') === 'Client') {
@@ -36,7 +36,7 @@ class Client extends MY_Controller {
 		else{
 			redirect('Home');
 		}
-	}
+	}*/
 
 	public function AllReservation($id = '')
 	{
@@ -177,14 +177,11 @@ class Client extends MY_Controller {
 			}
 			$Total = $this->ClientModel->Get_Total_Rows($Search,'users_info');
 			$config = $this->Config_Pagination('Client/AllClients/',$Total);
-			$config['first_link'] = 'First';
-			$config['last_link'] = 'Last';
 			$this->pagination->initialize($config);
 			$this->data['ClientList'] = $this->ClientModel->GET($Search,$config['per_page'],$offset);
 			$this->data['Total'] = $Total;
 			$this->data['PerPage'] = $config['per_page'];
 			$this->render('Client/clients_view','master');
-			//$this->load->view('Client/clients_view',$this->data);
 		}else{
 			redirect('Home');
 		}
@@ -212,27 +209,9 @@ class Client extends MY_Controller {
 	}
 	//End Json Data Return Methods
 
-	private function Config_Pagination($BaseUrl='',$Total=''){
-		$config = array();
-		$config = [
-			'base_url' => base_url($BaseUrl),
-			'per_page' => 5,
-			'total_rows' => $Total,
-			'use_page_numbers' => TRUE,
-			'full_tag_open' => '<div id="pagination">',
-			'full_tag_close' => '</div>',
-			'cur_tag_open' => '<b>',
-			'cur_tag_close' => '</b>',
-			'next_link' => 'Next',
-			'prev_link' => 'Previous',
-			'uri_segment' => 3,
-		];
-		return $config;
-	}
-
 	public function Add()
 	{
-		$this->data['title'] = "Add Client Details";
+		$this->data['PageHeader'] = "Add Client Details";
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->data['BloodGroupList'] = array(
 				' ' => 'Select Your Blood Group',
@@ -258,7 +237,7 @@ class Client extends MY_Controller {
 			if(!$this->input->post('AddClient'))
 			{
 				$this->data['message'] = '';
-				$this->load->view('Client/add_view', $this->data);
+				$this->render('Client/add_view','master');
 			}
 			else
 			{
@@ -294,6 +273,7 @@ class Client extends MY_Controller {
 				      	'PhoneNo' => $this->input->post('PhoneNo'),
 				       	'Birthdate' => $this->input->post('Birthdate'),
 				      	'BloodGroup' => $this->input->post('BloodGroup'),
+				      	'Type' => $this->input->post('Type'),
 				      	'NationalIdNo' => $this->input->post('NationalIdNo'),
 				     	'Username' => $this->input->post('Username'),
 				      	'Password' => $this->encrypt->encode($this->input->post('Password'))
@@ -313,7 +293,8 @@ class Client extends MY_Controller {
 				else
 				{
 					$this->data['message'] = validation_errors();
-					$this->load->view('Client/add_view', $this->data);
+					$this->render('Client/add_view','master');
+					//$this->load->view('Client/add_view', $this->data);
 				}
 			}
 		}else{
@@ -324,11 +305,15 @@ class Client extends MY_Controller {
 	public function Details($EntityNo)
 	{
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$this->data['title'] = "Client Details";
+			$this->data['PageHeader'] = "Client Details";
 		
 			$this->data['Client'] = $this->ClientModel->Get_Where($EntityNo);
-
-			$this->load->view('Client/details_view',$this->data);
+			
+			if(empty($this->data['Client'])){
+				$this->session->set_flashdata('error', 'There are no informations for this client!, please try again.');
+				redirect(base_url('Client/AllClients'));
+			}
+			$this->render('Client/details_view','master');
 		}else{
 			redirect('Home');
 		}
@@ -337,7 +322,7 @@ class Client extends MY_Controller {
 	public function Edit($EntityNo)
 	{
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$this->data['title'] = 'Update Client Details';
+			$this->data['PageHeader'] = 'Update Client Details';
 			$this->data['message'] = '';
 			$this->data['BloodGroupList'] = array(
 				' '   => 'Select Your Blood Group',
@@ -357,10 +342,13 @@ class Client extends MY_Controller {
 				'Royal'  => 'Royal',
 			);
 			$this->data['Client'] = $this->ClientModel->Get_Where($EntityNo);
-
+			if(empty($this->data['Client'])){
+				$this->session->set_flashdata('error', 'There are no informations for this client!, please try again.');
+				redirect(base_url('Client/AllClients'));
+			}
 			if(!$this->input->post('Update'))
 			{
-				$this->load->view('Client/edit_view',$this->data);
+				$this->render('Client/edit_view','master');
 			}
 			else
 			{
@@ -414,7 +402,7 @@ class Client extends MY_Controller {
 				}
 
 				$this->data['message'] = validation_errors();
-				$this->load->view('Client/edit_view',$this->data);
+				$this->render('Client/edit_view','master');
 			}
 		}else
 		{
@@ -425,18 +413,21 @@ class Client extends MY_Controller {
 	public function Remove($EntityNo)
 	{
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$this->data['title'] = "Client Details";
+			$this->data['PageHeader'] = "Client Details";
 		
 			$this->data['Client'] = $this->ClientModel->Get_Where($EntityNo);
-
+			if(empty($this->data['Client'])){
+				$this->session->set_flashdata('error', 'There are no informations for this client!, please try again.');
+				redirect(base_url('Client/AllClients'));
+			}
 			if($this->input->post('Remove'))
 			{
-				$this->data = array(
+				$DeleteData = array(
 					'EntityNo' => $this->data['Client']['EntityNo'],
 					'IsDeleted' => 1,
 					'UserId' => $this->data['Client']['UserId'], 
 				);
-				$Status = $this->ClientModel->Delete_Client_info($this->data);
+				$Status = $this->ClientModel->Delete_Client_info($DeleteData);
 				if($Status){
 					$this->session->set_flashdata('success', 'Data successfully deleted.');
 				}else{
@@ -444,7 +435,7 @@ class Client extends MY_Controller {
 				}
 				redirect(base_url('Client/AllClients'));
 			}else{
-				$this->load->view('Client/remove_view',$this->data);
+				$this->render('Client/remove_view','master');
 			}
 		}else{
 			redirect('Home');

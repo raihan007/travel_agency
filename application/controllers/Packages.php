@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Packages extends CI_Controller {
+class Packages extends MY_Controller {
 
 	public function __construct(){
 		parent::__construct();
@@ -20,27 +20,9 @@ class Packages extends CI_Controller {
 		echo time();
 	}
 
-	private function Config_Pagination($BaseUrl='',$Total=''){
-		$config = array();
-		$config = [
-			'base_url' => base_url($BaseUrl),
-			'per_page' => 5,
-			'total_rows' => $Total,
-			'use_page_numbers' => TRUE,
-			'full_tag_open' => '<div id="pagination">',
-			'full_tag_close' => '</div>',
-			'cur_tag_open' => '<b>',
-			'cur_tag_close' => '</b>',
-			'next_link' => 'Next',
-			'prev_link' => 'Previous',
-			'uri_segment' => 3,
-		];
-		return $config;
-	}
-
 	public function AllPackages($offset = 0)
 	{
-		$data['title'] = "All Package Details";
+		$this->data['PageHeader'] = "All Package Details";
 
 		if($this->session->userdata('UserRole') === 'Admin') {
 
@@ -51,11 +33,12 @@ class Packages extends CI_Controller {
 			$config = $this->Config_Pagination('Packages/AllPackages',$Total);
 			$this->pagination->initialize($config);
 				
-			$data['PackageList'] = $this->PackageModel->GET(array(),$config['per_page'],$offset);
-			$data['Total'] = $Total;
-			$data['PerPage'] = $config['per_page'];
+			$this->data['PackageList'] = $this->PackageModel->GET(array(),$config['per_page'],$offset);
+			$this->data['Total'] = $Total;
+			$this->data['PerPage'] = $config['per_page'];
 
-			$this->load->view('Package/packages_view',$data);
+			$this->render('Package/packages_view','master');
+			//$this->load->view('Package/packages_view',$this->data);
 		}else{
 			redirect('Home');
 		}
@@ -63,15 +46,16 @@ class Packages extends CI_Controller {
 
 	public function Gallery($id = 0)
 	{
-		$data['title'] = "Package Gallery";
-		$data['message'] = '';
+		$this->data['PageHeader'] = "Package Gallery";
+		$this->data['message'] = '';
 		if($this->session->userdata('UserId')) {
 			$PackageInfo = $this->PackageModel->Get_By_ID($id);
-			$data['PackageTitle'] = $PackageInfo['Title'];
-			$data['ID'] = $PackageInfo['ID'];
-			$data['EntityNo'] = $id;
-			$data['ImageList'] = explode(",",$this->PackageModel->Get_Images($PackageInfo['ID']));
-			$this->load->view('Package/gallery_view',$data);
+			$this->data['PackageTitle'] = $PackageInfo['Title'];
+			$this->data['ID'] = $PackageInfo['ID'];
+			$this->data['EntityNo'] = $id;
+			$this->data['ImageList'] = explode(",",$this->PackageModel->Get_Images($PackageInfo['ID']));
+			$this->render('Package/gallery_view','master');
+			//$this->load->view('Package/gallery_view',$this->data);
 		}else{
 			redirect('Home');
 		}
@@ -79,15 +63,16 @@ class Packages extends CI_Controller {
 
 	public function Add()
 	{
-		$data['title'] = "Add Package Details";
+		$this->data['PageHeader'] = "Add Package Details";
 		if($this->session->userdata('UserRole') === 'Admin') {
 			
-			$data['NextEntityNo'] = $this->PackageModel->Get_Next_Entity_No('Packages_info');
+			$this->data['NextEntityNo'] = $this->PackageModel->Get_Next_Entity_No('Packages_info');
 
 			if(!$this->input->post('AddPackage'))
 			{
-				$data['message'] = '';
-				$this->load->view('Package/add_view', $data);
+				$this->data['message'] = '';
+				$this->render('Package/add_view','master');
+				//$this->load->view('Package/add_view', $this->data);
 			}
 			else
 			{
@@ -130,10 +115,10 @@ class Packages extends CI_Controller {
 				       	'Remarks' => $this->input->post('Remarks'),
 				       	'BookingLastDate' => $this->input->post('BookingLastDate')
 					);
-					$DataStatus = $this->PackageModel->Add_New_Package_info($PackageData);
+					$this->dataStatus = $this->PackageModel->Add_New_Package_info($PackageData);
 
 					//Storing insertion status message.
-			        if($ImageStatus || $DataStatus){
+			        if($ImageStatus || $this->dataStatus){
 					    	$this->session->set_flashdata('success', 'Data added successfully.');
 					}else{
 					    	$this->session->set_flashdata('error', 'Some problems occured, please try again.');
@@ -143,8 +128,9 @@ class Packages extends CI_Controller {
 				}
 				else
 				{
-					$data['message'] = validation_errors();
-					$this->load->view('Package/add_view', $data);
+					$this->data['message'] = validation_errors();
+					$this->render('Package/add_view','master');
+					//$this->load->view('Package/add_view', $this->data);
 				}
 			}
 		}else{
@@ -168,24 +154,24 @@ class Packages extends CI_Controller {
 
 	public function edit($id = 0)
 	{	
-		$data['title'] = 'Update Package Details';
+		$this->data['title'] = 'Update Package Details';
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['Package'] = $this->PackageModel->Get_By_ID($id);
-			$PackageId = $data['Package']['ID'];
-			if($data['Package']['Gallery'] === '1'){
-				$data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
+			$this->data['Package'] = $this->PackageModel->Get_By_ID($id);
+			$PackageId = $this->data['Package']['ID'];
+			if($this->data['Package']['Gallery'] === '1'){
+				$this->data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
 			}
 			if(!$this->input->post('Update'))
 			{
-				$data['message'] = '';
-				$this->load->view('Package/edit_view', $data);
+				$this->data['message'] = '';
+				$this->load->view('Package/edit_view', $this->data);
 			}
 			else
 			{
 				if($this->form_validation->run('PackageInfoForm'))
 				{
 					$PackageId = $PackageId;
-					$Gallery = $data['Package']['Gallery'];
+					$Gallery = $this->data['Package']['Gallery'];
 						if (!empty($_FILES['Photos']['name'][0])) {
 							$this->load->library('upload');
 							$cpt = count($_FILES['Photos']['name']);
@@ -221,10 +207,10 @@ class Packages extends CI_Controller {
 					      	'Discount' => $this->input->post('Discount'),
 					       	'Remarks' => $this->input->post('Remarks')
 						);
-						$DataStatus = $this->PackageModel->Update_Package_info($PackageData);
+						$this->dataStatus = $this->PackageModel->Update_Package_info($PackageData);
 
 						//Storing insertion status message.
-				        if($ImageStatus || $DataStatus){
+				        if($ImageStatus || $this->dataStatus){
 						    	$this->session->set_flashdata('success', 'Data Updated successfully.');
 						}else{
 						    	$this->session->set_flashdata('error', 'Some problems occured, please try again.');
@@ -234,8 +220,8 @@ class Packages extends CI_Controller {
 					}
 					else
 					{
-						$data['message'] = validation_errors();
-						$this->load->view('Package/edit_view', $data);
+						$this->data['message'] = validation_errors();
+						$this->load->view('Package/edit_view', $this->data);
 					}
 			}
 		}else{
@@ -245,18 +231,22 @@ class Packages extends CI_Controller {
 
 	public function Details($EntityNo)
 	{
-		$data['title'] = "Package Details";
-		$data['Package'] = $this->PackageModel->Get_By_ID($EntityNo);
-		$PackageId = $data['Package']['ID'];
-		$data['EntityNo'] = $data['Package']['EntityNo'];
-		if($data['Package']['Gallery'] === '1'){
-			$data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
+		$this->data['PageHeader'] = "Package Details";
+		$this->data['Package'] = $this->PackageModel->Get_By_ID($EntityNo);
+		if(empty($this->data['Package'])){
+			$this->session->set_flashdata('error', 'There are no informations for this package!, please try again.');
+			redirect(base_url('Packages/AllPackages'));
+		}
+		$PackageId = $this->data['Package']['ID'];
+		$this->data['EntityNo'] = $this->data['Package']['EntityNo'];
+		if($this->data['Package']['Gallery'] === '1'){
+			$this->data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
 		}
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$this->load->view('Package/details_view',$data);
+			$this->render('Package/details_view','master');
 		}
 		elseif($this->session->userdata('UserRole') === 'Client') {
-			$this->load->view('Client/package_details_view',$data);
+			$this->render('Client/package_details_view','master');
 		}
 		else{
 			redirect('Home');
@@ -265,17 +255,17 @@ class Packages extends CI_Controller {
 
 	public function Remove($EntityNo)
 	{
-		$data['title'] = "Remove Package Details";
+		$this->data['title'] = "Remove Package Details";
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['Package'] = $this->PackageModel->Get_By_ID($EntityNo);
-			$PackageId = $data['Package']['ID'];
-			if($data['Package']['Gallery'] === '1'){
-				$data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
+			$this->data['Package'] = $this->PackageModel->Get_By_ID($EntityNo);
+			$PackageId = $this->data['Package']['ID'];
+			if($this->data['Package']['Gallery'] === '1'){
+				$this->data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
 			}
 			if($this->input->post('Delete'))
 			{
 				$PackageData = array(
-					'EntityNo' => $data['Package']['EntityNo'],
+					'EntityNo' => $this->data['Package']['EntityNo'],
 					'IsDeleted' => 1,
 					'ID' => $PackageId, 
 				);
@@ -287,7 +277,7 @@ class Packages extends CI_Controller {
 				}
 				redirect(base_url('Packages/AllPackages'));
 			}
-			$this->load->view('Package/remove_view',$data);
+			$this->load->view('Package/remove_view',$this->data);
 		}else{
 			redirect('Home');
 		}
@@ -295,8 +285,8 @@ class Packages extends CI_Controller {
 
 	public function PackageDetails(){
 		$packageId = $this->input->post('packageId');
-		$data['Package'] = $this->PackageModel->Get_Details($packageId);
-		echo json_encode($data);
+		$this->data['Package'] = $this->PackageModel->Get_Details($packageId);
+		echo json_encode($this->data);
 	}
 }
 

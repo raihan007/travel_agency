@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Booking extends CI_Controller {
+class Booking extends MY_Controller {
 
 	function __construct() {
 		parent::__construct();
@@ -11,27 +11,9 @@ class Booking extends CI_Controller {
 		$this->load->library('UniqueKey');
 	}
 
-	private function Config_Pagination($BaseUrl='',$Total=''){
-		$config = array();
-		$config = [
-			'base_url' => base_url($BaseUrl),
-			'per_page' => 5,
-			'total_rows' => $Total,
-			'use_page_numbers' => TRUE,
-			'full_tag_open' => '<div id="pagination">',
-			'full_tag_close' => '</div>',
-			'cur_tag_open' => '<b>',
-			'cur_tag_close' => '</b>',
-			'next_link' => 'Next',
-			'prev_link' => 'Previous',
-			'uri_segment' => 3,
-		];
-		return $config;
-	}
-
 	public function AllBooking($offset = 0)
 	{
-		$data['title'] = "All Booking Details";
+		$this->data['PageHeader'] = "All Booking Details";
 
 		if($this->session->userdata('UserRole') === 'Admin') {
 
@@ -41,10 +23,10 @@ class Booking extends CI_Controller {
 			$config = $this->Config_Pagination('Booking/AllBooking',$Total);
 			$this->pagination->initialize($config);
 				
-			$data['BookingList'] = $this->BookingModel->GET(array(),$config['per_page'],$offset);
-			$data['Total'] = $Total;
-			$data['PerPage'] = $config['per_page'];
-			$this->load->view('Booking/booking_view',$data);
+			$this->data['BookingList'] = $this->BookingModel->GET(array(),$config['per_page'],$offset);
+			$this->data['Total'] = $Total;
+			$this->data['PerPage'] = $config['per_page'];
+			$this->render('Booking/booking_view','master');
 		}else{
 			redirect('Home');
 		}
@@ -52,19 +34,20 @@ class Booking extends CI_Controller {
 
 	public function Add()
 	{
-		$data['title'] = "Package Booking Details";
+		$this->data['PageHeader'] = "Package Booking Details";
 		if($this->session->userdata('UserRole') === 'Admin') {
 			
-			$data['NextEntityNo'] = $this->PackageModel->Get_Next_Entity_No('packages_booking_info');
-			$data['PackagesList'] = $this->PackageModel->Get_Packages_Title();
-			$data['PackagesList'] = array(' ' => '-- Select Package --') + $data['PackagesList'];
-			$data['ClientsList'] = $this->ClientModel->Get_Clients_Name();
-			$data['ClientsList'] = array(' ' => '-- Select Client --') + $data['ClientsList'];
+			$this->data['NextEntityNo'] = $this->PackageModel->Get_Next_Entity_No('packages_booking_info');
+			$this->data['PackagesList'] = $this->PackageModel->Get_Packages_Title();
+			$this->data['PackagesList'] = array(' ' => '-- Select Package --') + $this->data['PackagesList'];
+			$this->data['ClientsList'] = $this->ClientModel->Get_Clients_Name();
+			$this->data['ClientsList'] = array(' ' => '-- Select Client --') + $this->data['ClientsList'];
 
 			if(!$this->input->post('AddBooking'))
 			{
-				$data['message'] = '';
-				$this->load->view('Booking/add_view', $data);
+				$this->data['message'] = '';
+				$this->render('Booking/add_view','master');
+				//$this->load->view('Booking/add_view', $this->data);
 			}
 			else
 			{
@@ -88,8 +71,9 @@ class Booking extends CI_Controller {
 				}
 				else
 				{
-					$data['message'] = validation_errors();
-					$this->load->view('Booking/add_view', $data);
+					$this->data['message'] = validation_errors();
+					$this->render('Booking/add_view','master');
+					//$this->load->view('Booking/add_view', $this->data);
 				}
 			}
 		}else{
@@ -99,30 +83,30 @@ class Booking extends CI_Controller {
 
 	public function Reservation($id = 0)
 	{	
-		$data['title'] = 'Reserved a Package';
-		$data['NextEntityNo'] = $this->PackageModel->Get_Next_Entity_No('packages_booking_info');
+		$this->data['title'] = 'Reserved a Package';
+		$this->data['NextEntityNo'] = $this->PackageModel->Get_Next_Entity_No('packages_booking_info');
 		if($this->session->userdata('UserRole') === 'Client') {
-			$data['Booking'] = $this->BookingModel->Get_By_ID($id);
-			$data['Package'] = $this->PackageModel->Get_Details($data['Booking']['PackageId']);
-			$data['Client'] = $this->ClientModel->Get_Details($data['Booking']['ClientId']);
-			$data['TotalCost'] = (1 * $data['Package']['Cost'])-($data['Package']['Discount']/100);
+			$this->data['Booking'] = $this->BookingModel->Get_By_ID($id);
+			$this->data['Package'] = $this->PackageModel->Get_Details($this->data['Booking']['PackageId']);
+			$this->data['Client'] = $this->ClientModel->Get_Details($this->data['Booking']['ClientId']);
+			$this->data['TotalCost'] = (1 * $this->data['Package']['Cost'])-($this->data['Package']['Discount']/100);
 			if(!$this->input->post('Reserved'))
 			{
-				$data['message'] = '';
-				$this->load->view('Booking/reservation_view', $data);
+				$this->data['message'] = '';
+				$this->load->view('Booking/reservation_view', $this->data);
 			}
 			else
 			{
 				if($this->form_validation->run('ClientBookingInfoForm'))
 				{
-					$Data = array(
+					$this->data = array(
 						'PackageId' => $this->input->post('PackageId'),
 						'Quantity' => $this->input->post('Quantity'),
 						'ClientId' => $this->input->post('ClientId'),
 					    'TotalCost' => $this->input->post('TotalCost'),
 					    'Date' => $this->input->post('BookingDate')
 					);
-					$Status = $this->BookingModel->Add_New_Booking_info($Data);
+					$Status = $this->BookingModel->Add_New_Booking_info($this->data);
 			        if($Status){
 					    	$this->session->set_flashdata('success', 'Data added successfully.');
 					}else{
@@ -132,8 +116,8 @@ class Booking extends CI_Controller {
 				}
 				else
 				{
-					$data['message'] = validation_errors();
-					$this->load->view('Booking/reservation_view', $data);
+					$this->data['message'] = validation_errors();
+					$this->load->view('Booking/reservation_view', $this->data);
 				}
 			}
 		}else{
@@ -143,25 +127,25 @@ class Booking extends CI_Controller {
 
 	public function edit($id = 0)
 	{	
-		$data['title'] = 'Update Booking Details';
+		$this->data['title'] = 'Update Booking Details';
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['PackagesList'] = $this->PackageModel->Get_Packages_Title();
-			$data['PackagesList'] = array(' ' => '-- Select Package --') + $data['PackagesList'];
-			$data['ClientsList'] = $this->ClientModel->Get_Clients_Name();
-			$data['ClientsList'] = array(' ' => '-- Select Client --') + $data['ClientsList'];
-			$data['Booking'] = $this->BookingModel->Get_By_ID($id);
-			$data['Package'] = $this->PackageModel->Get_Details($data['Booking']['PackageId']);
-			$BookingId = $data['Booking']['EntityNo'];
+			$this->data['PackagesList'] = $this->PackageModel->Get_Packages_Title();
+			$this->data['PackagesList'] = array(' ' => '-- Select Package --') + $this->data['PackagesList'];
+			$this->data['ClientsList'] = $this->ClientModel->Get_Clients_Name();
+			$this->data['ClientsList'] = array(' ' => '-- Select Client --') + $this->data['ClientsList'];
+			$this->data['Booking'] = $this->BookingModel->Get_By_ID($id);
+			$this->data['Package'] = $this->PackageModel->Get_Details($this->data['Booking']['PackageId']);
+			$BookingId = $this->data['Booking']['EntityNo'];
 			if(!$this->input->post('Update'))
 			{
-				$data['message'] = '';
-				$this->load->view('Booking/edit_view', $data);
+				$this->data['message'] = '';
+				$this->load->view('Booking/edit_view', $this->data);
 			}
 			else
 			{
 				if($this->form_validation->run('BookingInfoForm'))
 				{
-					$Data = array(
+					$this->data = array(
 						'EntityNo' => $BookingId,
 						'PackageId' => $this->input->post('PackageId'),
 						'Quantity' => $this->input->post('Quantity'),
@@ -169,7 +153,7 @@ class Booking extends CI_Controller {
 					    'TotalCost' => $this->input->post('TotalCost'),
 					    'Date' => $this->input->post('BookingDate')
 					);
-					$Status = $this->BookingModel->Update_Booking_info($Data);
+					$Status = $this->BookingModel->Update_Booking_info($this->data);
 
 					if($Status){
 						$this->session->set_flashdata('success', 'Data Updated successfully.');
@@ -180,8 +164,8 @@ class Booking extends CI_Controller {
 				}
 				else
 				{
-					$data['message'] = validation_errors();
-					$this->load->view('Booking/edit_view', $data);
+					$this->data['message'] = validation_errors();
+					$this->load->view('Booking/edit_view', $this->data);
 				}
 			}
 		}else{
@@ -191,12 +175,12 @@ class Booking extends CI_Controller {
 
 	public function Details($EntityNo)
 	{
-		$data['title'] = "Package Details";
+		$this->data['title'] = "Package Details";
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['Booking'] = $this->BookingModel->Get_By_ID($EntityNo);
-			$data['Client'] = $this->ClientModel->Get_Details($data['Booking']['ClientId']);
-			$data['Package'] = $this->PackageModel->Get_Details($data['Booking']['PackageId']);
-			$this->load->view('Booking/details_view',$data);
+			$this->data['Booking'] = $this->BookingModel->Get_By_ID($EntityNo);
+			$this->data['Client'] = $this->ClientModel->Get_Details($this->data['Booking']['ClientId']);
+			$this->data['Package'] = $this->PackageModel->Get_Details($this->data['Booking']['PackageId']);
+			$this->load->view('Booking/details_view',$this->data);
 		}else{
 			redirect('Home');
 		}
@@ -204,17 +188,17 @@ class Booking extends CI_Controller {
 
 	public function Remove($EntityNo)
 	{
-		$data['title'] = "Remove Package Details";
+		$this->data['title'] = "Remove Package Details";
 		if($this->session->userdata('UserRole') === 'Admin') {
-			$data['Package'] = $this->PackageModel->Get_By_ID($EntityNo);
-			$PackageId = $data['Package']['ID'];
-			if($data['Package']['Gallery'] === '1'){
-				$data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
+			$this->data['Package'] = $this->PackageModel->Get_By_ID($EntityNo);
+			$PackageId = $this->data['Package']['ID'];
+			if($this->data['Package']['Gallery'] === '1'){
+				$this->data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
 			}
 			if($this->input->post('Delete'))
 			{
 				$PackageData = array(
-					'EntityNo' => $data['Package']['EntityNo'],
+					'EntityNo' => $this->data['Package']['EntityNo'],
 					'IsDeleted' => 1,
 					'ID' => $PackageId, 
 				);
@@ -226,7 +210,7 @@ class Booking extends CI_Controller {
 				}
 				redirect(base_url('Packages/AllPackages'));
 			}
-			$this->load->view('Package/remove_view',$data);
+			$this->load->view('Package/remove_view',$this->data);
 		}else{
 			redirect('Home');
 		}

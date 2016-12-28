@@ -1,30 +1,36 @@
-<?php $this->load->view('Shared/header_view'); ?>
-	<form method="POST" action="" name="SignUpForm" enctype="multipart/form-data">
-		<table align="center" >
-			<tr>
-				<td align="center" style="color: red;" colspan="2">
-					<?php echo $message; ?>
-				</td>
-			</tr>
-			<tr>
-				<td align="center" colspan="2"><h2>Change Your Username</h2></td>
-			</tr>
-			<tr>
-				<td>Old Username</td>
-				<td><input type="text" readonly="readonly" name="OldUsername" value="<?= set_value('OldUsername',$Username) ?>"></input></td>
-			</tr>
-			<tr>
-				<td>New Username</td>
-				<td><input type="text" name="NewUsername" value="<?= set_value('NewUsername') ?>"></input></td>
-			</tr>
-			<tr>
-				<td>Confirm Username</td>
-				<td><input type="text" name="ConfirmUsername" value="<?= set_value('ConfirmUsername') ?>"></input></td>
-			</tr>
-			<tr>
-				<td style="text-align: right;" ><a href="/travel_agency/Home">Back</a></td>
-				<td><input type="submit" name="ChangeUsername" value="Change Username"></input></td>
-			</tr>
-		</table>
-	</form>
-<?php $this->load->view('Shared/footer_view'); ?>
+		<div class="row">
+			<div class="col-sm-12 text-center text-danger">
+				{message}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-8">
+				<form method="POST" action="" name="SignUpForm" class="form-horizontal">
+				  <fieldset>
+				    <div class="form-group">
+				      <label for="OldUsername" class="col-lg-4 control-label">Old Username</label>
+				      <div class="col-lg-8">
+				        <input type="text" class="form-control" id="OldUsername" name="OldUsername" placeholder="Old Username">
+				      </div>
+				    </div>
+				    <div class="form-group">
+				      <label for="NewUsername" class="col-lg-4 control-label">New Username</label>
+				      <div class="col-lg-8">
+				        <input type="text" class="form-control" id="NewUsername" name="NewUsername" placeholder="New Username">
+				      </div>
+				    </div>
+				    <div class="form-group">
+				      <label for="ConfirmUsername" class="col-lg-4 control-label">Confirm Username</label>
+				      <div class="col-lg-8">
+				        <input type="text" class="form-control" id="ConfirmUsername" name="ConfirmUsername" placeholder="Confirm Username">
+				      </div>
+				    </div>
+				    <div class="form-group">
+				      <div class="col-lg-8 col-lg-offset-4">
+				        <input type="submit" class="btn btn-primary" name="ChangeUsername" value="Change Username"></input>
+				      </div>
+				    </div>
+				  </fieldset>
+				</form>
+			</div>
+		</div>

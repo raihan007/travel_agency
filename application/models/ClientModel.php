@@ -50,9 +50,10 @@ class ClientModel extends MY_Model {
 		}
 		$from = $page*$perpage;
 
-		$this->db->select();
-		$this->db->from($this->TableName);
-		$this->db->where_not_in('IsDeleted', 1);
+		$this->db->select('ui.*,ua.Email');
+		$this->db->from('users_info ui');
+		$this->db->join('users_access ua', 'ua.UserId = ui.UserId');
+		$this->db->where_not_in('ui.IsDeleted', 1);
 		if (!empty($SearchKey)) {
 			$this->db->like($SearchKey);
 		}
@@ -116,11 +117,32 @@ class ClientModel extends MY_Model {
 
 	public function Add_New_Client_Info($clientData = array()){
 		extract($clientData);
-		$sql = "INSERT INTO users_access VALUES (null,'$UserId','$Username','$Password',default)";
-		$sql1 = "INSERT INTO users_info VALUES (null,'$UserId','$FirstName','$LastName','$Gender','$Email','$Photo','$PermanentAddress','$PresentAddress','$PhoneNo','$Birthdate','$BloodGroup','$NationalIdNo',default,default)";
-		
-		$insert = $this->db->query($sql);
-		$insert1 = $this->db->query($sql1);
+		$clientData = array(
+			'UserId' => $UserId,
+			'FirstName' => $FirstName,
+	        'LastName' => $LastName,
+	      	'Gender' => $Gender,
+	       	'Photo' => $Photo,
+	       	'PermanentAddress' => $PermanentAddress,
+	     	'PresentAddress' => $PresentAddress,
+	      	'PhoneNo' => $PhoneNo,
+	       	'Birthdate' => $Birthdate,
+	      	'BloodGroup' => $BloodGroup,
+	      	'NationalIdNo' => $NationalIdNo,
+	      	'Type' => $Type
+		);
+
+		$AccessData = array(
+			'UserId' => $UserId,
+			'Username' => $Username,
+			'Email' => $Email,
+			'Password' => $Password
+		);
+
+		$insert = $this->db->insert('users_access',$AccessData);
+
+		$insert1 = $this->db->insert('users_info',$clientData);
+
         if($insert && $insert1){
             return true;
         }
@@ -129,10 +151,41 @@ class ClientModel extends MY_Model {
 
     function Update_Client_Info($clientData = array()) {
 	    extract($clientData);
-		$sql = "UPDATE users_info SET FirstName='$FirstName',LastName='$LastName',Gender='$Gender',Email='$Email',Photo='$Photo',PermanentAddress='$PermanentAddress',PresentAddress='$PresentAddress',PhoneNo='$PhoneNo',Birthdate='$Birthdate',BloodGroup='$BloodGroup',NationalIdNo='$NationalIdNo',Type='$Type' WHERE EntityNo=$EntityNo AND UserId='$UserId'";
+
+	    $clientData = array(
+			'FirstName' => $FirstName,
+	        'LastName' => $LastName,
+	      	'Gender' => $Gender,
+	       	'Photo' => $Photo,
+	       	'PermanentAddress' => $PermanentAddress,
+	     	'PresentAddress' => $PresentAddress,
+	      	'PhoneNo' => $PhoneNo,
+	       	'Birthdate' => $Birthdate,
+	      	'BloodGroup' => $BloodGroup,
+	      	'NationalIdNo' => $NationalIdNo,
+	      	'Type' => $Type
+		);
+
+		$AccessData = array(
+			'UserId' => $UserId,
+			'EntityNo' => $EntityNo,
+			'Email' => $Email,
+		);
+
+		$Where = array(
+			'UserId' => $UserId,
+			'EntityNo' => $EntityNo
+		);
 		
-		$insert = $this->db->query($sql);
-        if($insert){
+		$insert = $this->db
+	    		->where($Where)
+				->update('users_info', $clientData);
+
+		$insert1 = $this->db
+	    		->where($Where)
+				->update('users_access', $AccessData);
+
+        if($insert || $insert1 ){
             return true;
         }else{
             return false;    
@@ -141,9 +194,20 @@ class ClientModel extends MY_Model {
 
 	function Delete_Client_info($Data = array()){
 		extract($Data);
-	    $sql = "UPDATE users_info SET IsDeleted=$IsDeleted WHERE EntityNo=$EntityNo AND UserId='$UserId'";
-		
+		$UpdateData = array(
+			'IsDeleted' => $IsDeleted
+		);
+
+		$where = array(
+			'UserId' => $UserId,
+			'EntityNo' => $EntityNo
+		);
+	    $sql = $this->db
+	    		->where($where)
+				->update('users_info', $UpdateData);
+		/*echo $this->db->last_query();exit();*/
 		$insert = $this->db->query($sql);
+
         if($insert){
             return true;
         }else{
@@ -151,18 +215,27 @@ class ClientModel extends MY_Model {
         }
 	}
 
-	public function Get_Where($EntityNo = 0){
+	public function Get_Where($EntityNo = 0)
+	{
+		$where = array(
+			'ui.EntityNo' => $EntityNo,
+			'IsDeleted' => '0'
+		);
 
-		$sql = "SELECT * FROM users_info WHERE EntityNo=$EntityNo";
-		$result = $this->db->query($sql);
-		
-		if($result->num_rows() > 0)
+		$result = $this->db
+					->select('ui.*,ua.Username,ua.Email,ua.Password')
+					->from('users_info ui')
+					->join('users_access ua', 'ua.UserId = ui.UserId')
+					->where($where)
+					->get();
+					
+		if($result->num_rows() === 1)
 		{
 			return $result->row_array();
 		}
 		else 
 		{
-			return NULL;
+			return array();
 		}
 	}
 

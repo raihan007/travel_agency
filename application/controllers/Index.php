@@ -9,7 +9,13 @@ class Index extends MY_Controller {
 
 	public function Index()
 	{
-		$this->render('Public/Index_View','public');
+		if($this->session->userdata('UserId')) {
+			redirect('Home');
+		}
+		else{
+			$this->render('Public/Index_View','public');
+		}
+		
 	}
 
 	public function Manu()

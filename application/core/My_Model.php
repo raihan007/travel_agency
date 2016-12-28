@@ -74,10 +74,10 @@ class MY_Model extends CI_Model {
         //exit;
     }
 
-    public function GetTotalCount()
+    public function GetTotalCount($table)
 	{
 		$query = $this->db
-					->from($this->tableName)
+					->from($table)
 					->get();
 		
 		return $query->num_rows();
@@ -99,7 +99,27 @@ class MY_Model extends CI_Model {
  
 	public function Get_Next_Entity_No($tableName)
 	{
-		$sql = "SELECT `AUTO_INCREMENT`
+		$Where = array(
+			'TABLE_SCHEMA' => 'travel_agency',
+			'TABLE_NAME' => $tableName
+		);
+
+		$result = $this->db
+					->select('AUTO_INCREMENT')
+					->from('INFORMATION_SCHEMA.TABLES')
+					->where($Where)
+					->get();
+					
+		if($result->row()->AUTO_INCREMENT > 0)
+		{
+			return $result->row()->AUTO_INCREMENT;
+		}
+		else 
+		{
+			return 0;
+		}
+
+		/*$sql = "SELECT `AUTO_INCREMENT`
 				FROM  INFORMATION_SCHEMA.TABLES
 				WHERE TABLE_SCHEMA = 'travel_agency'
 				AND   TABLE_NAME   = '$tableName'";
@@ -113,7 +133,7 @@ class MY_Model extends CI_Model {
 		else 
 		{
 			return 0;
-		}
+		}*/
 	}
 
 	public function Get_Number_Of_Rows($column = '', $table = '')

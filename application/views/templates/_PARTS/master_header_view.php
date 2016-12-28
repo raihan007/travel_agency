@@ -39,7 +39,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Dearm Travel</a>
+                <a class="navbar-brand" href="<?= base_url() ?>">Dearm Travel</a>
             </div>
             <!-- /.navbar-header -->
             <ul class="nav navbar-top-links navbar-right">
@@ -293,10 +293,10 @@
                             <a href="#"><i class="fa fa-globe"></i> Tour Package<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#"><i class="fa fa-globe"></i> All Tour Packages</a>
+                                    <a href="<?= base_url('Packages/AllPackages/') ?>"><i class="fa fa-globe"></i> All Tour Packages</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fa fa-plus"></i> Add New Tour Package</a>
+                                    <a href="<?= base_url('Packages/Add') ?>"><i class="fa fa-plus"></i> Add New Tour Package</a>
                                 </li>
                             </ul>
                         </li>
@@ -304,10 +304,10 @@
                             <a href="#"><i class="fa fa-bookmark"></i> Booking Information<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#"><i class="fa fa-bookmark"></i> All Booking Information</a>
+                                    <a href="<?= base_url('Booking/AllBooking') ?>"><i class="fa fa-bookmark"></i> All Booking Information</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fa fa-plus"></i> Add New Tour Booking</a>
+                                    <a href="<?= base_url('Booking/Add') ?>"><i class="fa fa-plus"></i> Add New Tour Booking</a>
                                 </li>
                             </ul>
                         </li>
@@ -315,10 +315,10 @@
                             <a href="#"><i class="fa fa-file-text"></i> Report<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#"><i class="fa fa-file-text"></i> Booking Report</a>
+                                    <a href="<?= base_url('Report/Booking') ?>"><i class="fa fa-file-text"></i> Booking Report</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fa fa-money"></i> Sales Report</a>
+                                    <a href="<?= base_url('Report/Sales') ?>"><i class="fa fa-money"></i> Sales Report</a>
                                 </li>
                             </ul>
                         </li>
@@ -326,10 +326,10 @@
                             <a href="#"><i class="fa fa-cogs"></i> Settings<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#"><i class="fa fa-user-secret"></i> Change Username</a>
+                                    <a href="<?= base_url('Settings/ChangeUsername') ?>"><i class="fa fa-user-secret"></i> Change Username</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fa fa-unlock-alt"></i> Change Password</a>
+                                    <a href="<?= base_url('Settings/ChangePassword') ?>"><i class="fa fa-unlock-alt"></i> Change Password</a>
                                 </li>
                             </ul>
                         </li>
