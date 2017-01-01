@@ -320,6 +320,9 @@
                                 <li>
                                     <a href="<?= base_url('Report/Sales') ?>"><i class="fa fa-money"></i> Sales Report</a>
                                 </li>
+                                <li>
+                                    <a href="<?= base_url('Report/Clients') ?>"><i class="fa fa-users"></i> Clients Report</a>
+                                </li>
                             </ul>
                         </li>
                         <li>

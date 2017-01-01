@@ -41,7 +41,13 @@ class Settings extends MY_Controller {
 					$this->data['message'] = validation_errors();
 				}
 			}
-			$this->render('Common/change_password_view','master');
+
+			if($this->session->userdata('UserRole') === 'Admin') {
+				$this->render('Common/change_password_view','master');
+			}
+			elseif($this->session->userdata('UserRole') === 'Client') {
+				$this->render('Common/change_password_view','client');
+			}
 		}
 		else{
 			redirect('Home');
@@ -78,7 +84,12 @@ class Settings extends MY_Controller {
 					$this->data['message'] = validation_errors();
 				}
 			}
-			$this->render('Common/change_username_view','master');
+			if($this->session->userdata('UserRole') === 'Admin') {
+				$this->render('Common/change_username_view','master');
+			}
+			elseif($this->session->userdata('UserRole') === 'Client') {
+				$this->render('Common/change_username_view','client');
+			}
 		}
 		else{
 			redirect('Home');

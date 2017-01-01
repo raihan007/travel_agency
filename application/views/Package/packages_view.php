@@ -1,5 +1,5 @@
             <div class="row" style="margin-bottom: 10px;">
-                <div class="col-sm-12">
+                <div class="col-sm-12" style="margin-bottom: 10px;">
                     <a class="btn btn-primary" href="/travel_agency/Packages/add">Add New</a>
                 </div>
                 <div class="col-md-12 text-center">
@@ -57,7 +57,7 @@
                                     <a href="<?= base_url('Packages/Details/'.$row['EntityNo']) ?>">Details</a><br/>
                                     <a href="<?= base_url('Packages/Edit/'.$row['EntityNo']) ?>">Edit</a><br/>
                                     <a href="<?= base_url('Packages/Remove/'.$row['EntityNo']) ?>">Remove</a><br/>
-                                    <a href="<?= base_url('Booking/Details/'.$row['EntityNo']) ?>">Booking Details</a>
+                                    <!-- <a href="<?= base_url('Booking/Details/'.$row['EntityNo']) ?>">Booking Details</a> -->
                                 </td>
                             </tr>
                             <?php endforeach; ?>

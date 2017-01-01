@@ -1,5 +1,4 @@
-<?php $this->load->view('Shared/header_view'); ?>
-	<form method="POST" action="" name="BookingInfoForm" enctype="multipart/form-data">
+<form method="POST" action="" name="BookingInfoForm" enctype="multipart/form-data">
 		<table style="width: auto;" align="center" >
 			<tr>
 				<td align="center" style="color: red;" colspan="2">
@@ -50,10 +49,9 @@
 			<tr>
 				<td style="text-align: right;" >
 				<td>
-					<input type="submit" name="Reserved" value="Book Now"></input>
-					<a href="/travel_agency/Client/Index">Home</a>
+					<input class="btn btn-info" type="submit" name="Reserved" value="Book Now"></input>
+					<a class="btn btn-default" href="/travel_agency/Client/Index">Home</a>
 				</td>
 			</tr>
 		</table>
 	</form>
-<?php $this->load->view('Shared/footer_view'); ?>

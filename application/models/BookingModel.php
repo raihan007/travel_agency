@@ -103,9 +103,16 @@ class BookingModel extends MY_Model {
 
 	public function Get_By_ID($Id = 0)
 	{
-		$sql = "SELECT * FROM packages_booking_info WHERE EntityNo=$Id";
-		$result = $this->db->query($sql);
+		$where = array(
+			'EntityNo' => $Id
+		);
 
+		$result = $this->db
+					->select()
+					->from('packages_booking_info')
+					->where($where)
+					->get();
+					
 		if($result->num_rows() === 1)
 		{
 			return $result->row_array();

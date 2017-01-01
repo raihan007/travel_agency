@@ -54,7 +54,14 @@ class Packages extends MY_Controller {
 			$this->data['ID'] = $PackageInfo['ID'];
 			$this->data['EntityNo'] = $id;
 			$this->data['ImageList'] = explode(",",$this->PackageModel->Get_Images($PackageInfo['ID']));
-			$this->render('Package/gallery_view','master');
+
+			if($this->session->userdata('UserRole') === 'Admin') {
+				$this->render('Package/gallery_view','master');
+			}
+			elseif($this->session->userdata('UserRole') === 'Client') {
+				$this->render('Package/gallery_view','client');
+			}
+			
 			//$this->load->view('Package/gallery_view',$this->data);
 		}else{
 			redirect('Home');
@@ -154,9 +161,15 @@ class Packages extends MY_Controller {
 
 	public function edit($id = 0)
 	{	
-		$this->data['title'] = 'Update Package Details';
+		$this->data['PageHeader'] = 'Update Package Details';
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->data['Package'] = $this->PackageModel->Get_By_ID($id);
+			
+			if(empty($this->data['Package'])){
+				$this->session->set_flashdata('error', 'There are no informations for this package!, please try again.');
+				redirect(base_url('Packages/AllPackages'));
+			}
+
 			$PackageId = $this->data['Package']['ID'];
 			if($this->data['Package']['Gallery'] === '1'){
 				$this->data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
@@ -164,7 +177,7 @@ class Packages extends MY_Controller {
 			if(!$this->input->post('Update'))
 			{
 				$this->data['message'] = '';
-				$this->load->view('Package/edit_view', $this->data);
+				$this->render('Package/edit_view','master');
 			}
 			else
 			{
@@ -205,7 +218,8 @@ class Packages extends MY_Controller {
 					        'Cost' => $this->input->post('Cost'),
 					      	'Type' => $this->input->post('Type'),
 					      	'Discount' => $this->input->post('Discount'),
-					       	'Remarks' => $this->input->post('Remarks')
+					       	'Remarks' => $this->input->post('Remarks'),
+					       	'BookingLastDate' => $this->input->post('BookingLastDate')
 						);
 						$this->dataStatus = $this->PackageModel->Update_Package_info($PackageData);
 
@@ -221,7 +235,7 @@ class Packages extends MY_Controller {
 					else
 					{
 						$this->data['message'] = validation_errors();
-						$this->load->view('Package/edit_view', $this->data);
+						$this->render('Package/edit_view','master');
 					}
 			}
 		}else{
@@ -246,18 +260,22 @@ class Packages extends MY_Controller {
 			$this->render('Package/details_view','master');
 		}
 		elseif($this->session->userdata('UserRole') === 'Client') {
-			$this->render('Client/package_details_view','master');
+			$this->render('Client/package_details_view','client');
 		}
 		else{
-			redirect('Home');
+			$this->render('Common/details_view','public');
 		}
 	}
 
 	public function Remove($EntityNo)
 	{
-		$this->data['title'] = "Remove Package Details";
+		$this->data['PageHeader'] = "Remove Package Details";
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->data['Package'] = $this->PackageModel->Get_By_ID($EntityNo);
+			if(empty($this->data['Package'])){
+				$this->session->set_flashdata('error', 'There are no informations for this package!, please try again.');
+				redirect(base_url('Packages/AllPackages'));
+			}
 			$PackageId = $this->data['Package']['ID'];
 			if($this->data['Package']['Gallery'] === '1'){
 				$this->data['Package']['Images'] = explode(",",$this->PackageModel->Get_Images($PackageId));
@@ -277,7 +295,7 @@ class Packages extends MY_Controller {
 				}
 				redirect(base_url('Packages/AllPackages'));
 			}
-			$this->load->view('Package/remove_view',$this->data);
+			$this->render('Package/remove_view','master');
 		}else{
 			redirect('Home');
 		}

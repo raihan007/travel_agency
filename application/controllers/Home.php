@@ -22,4 +22,10 @@ class Home extends CI_Controller {
 			$this->session->set_flashdata('error', $notif);
 		}
 	}
+
+	public function Booking()
+	{
+		$this->session->set_flashdata('error', 'Please login first Or Create your account.');
+		redirect(base_url('Login'));
+	}
 }

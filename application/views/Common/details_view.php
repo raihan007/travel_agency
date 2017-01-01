@@ -1,37 +1,31 @@
-<div class="row">
+			<div class="row">
 				<div class="col-md-12">
 					<dl class="dl-horizontal detailsView">
-						<dt>Entity No :</dt>
-						<dd><?= $Package['EntityNo'] ?></dd>
-						<dt>Username :</dt>
+						<dt>Title :</dt>
 						<dd><?= $Package['Title'] ?></dd>
-						<dt>First Name :</dt>
+						<dt>Cost :</dt>
 						<dd><?= $Package['Cost'] ?></dd>
+						<dt>Photos :</dt>
 						<dd>
 						<?php if($Package['Gallery'] == '1'): ?>
 						<?php foreach ($Package['Images'] as $key => $value) :?>
 		                    <img id="Image" height='100' width='100' src="<?php echo base_url('Public/Photos/Packages/'.$value); ?>" />
 		            	<?php endforeach; ?>
-		            	<br/><a style="margin-top: 5px;" class="btn btn-success" href="<?= base_url('Packages/Gallery/'.$Package['EntityNo']) ?>">See Gallery Here</a>
 			            <?php else: ?>
 			            	No Photos Available!
 			            <?php endif; ?>
 						</dd>
-						<dt>Email :</dt>
+						<dt>Type :</dt>
 						<dd><?= $Package['Type'] ?></dd>
-						<dt>Phone No. :</dt>
+						<dt>Discount :</dt>
 						<dd><?= $Package['Discount'] ?></dd>
-						<dt>Date of Birth :</dt>
+						<dt>Last Booking Date :</dt>
 						<dd><?= $Package['BookingLastDate'] ?></dd>
-						<dt>Permanent Address :</dt>
+						<dt>Remarks :</dt>
 						<dd><?= $Package['Remarks'] ?></dd>
 						<dt></dt>
-						<dd>
-							<h3>Are You Sure?</h3>
-							<form method="POST">
-								<input type="hidden" value="<? $Package['EntityNo']?> "></input>
-								<input type="Submit" class="btn btn-danger" name="Delete" value="Delete"></input>
-							</form>
+						<dd><a class="btn btn-info" href="http://localhost/travel_agency/TourPackages">Back</a>
+						<a class="btn btn-default" href="/travel_agency/Home/Booking">Take Seat</a>
 						</dd>
 					</dl>
 				</div>

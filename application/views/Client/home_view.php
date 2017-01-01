@@ -1,5 +1,5 @@
-<?php $this->load->view('Shared/header_view'); ?>
-	<table border="1" style="text-align: center;" align="center">
+<div class="row">
+	<table style="text-align: center;" class="table table-bordered table-hover table-responsive">
 		<tr><td colspan="7"><h1>Welcome</h1></td></tr>
 		<?php  if( $notif = $this->session->flashdata('success')): ?>
         <tr>
@@ -17,7 +17,7 @@
 				<br/>Last Login: <?= $LastLoginTime ?>
 			</td>
 		</tr>
-		<tr>
+		<!--<tr>
 			<td class="menu">
 				<a href="/travel_agency/Client">Home</a>
 			</td>
@@ -36,9 +36,9 @@
 			<td class="menu">
 				<strong><a class="logout" href="/travel_agency/Login/Logout">Logout</a></strong>
 			</td>
-		</tr>
+		</tr>-->
 	</table><br/>
-	<table border="1" style="width: 100%;text-align: center;" align="center">
+	<table style="text-align: center;" class="table table-bordered table-hover table-responsive">
 		<thead>
 			<tr><td colspan="7"><h1>All Packages</h1></td></tr>
 			<tr>
@@ -79,5 +79,4 @@
 					</tr>
 			</tbody>
 	</table>
-
-<?php $this->load->view('Shared/footer_view'); ?>
+</div>

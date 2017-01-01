@@ -29,7 +29,7 @@ class Report extends MY_Controller {
 			$this->data['PageTotal'] = $PageTotal['SUM(TotalCost)'];
 			$GrandTotal = $this->BookingModel->Get_SUM($Search,0,1);
 			$this->data['GrandTotal'] = $GrandTotal['SUM(TotalCost)'];
-			$this->data['BookingList'] = $this->BookingModel->GetAllBokking($Search,$config['per_page'],$offset);
+			$this->data['BookingList'] = $this->BookingModel->GET($Search,$config['per_page'],$offset);
 			$this->data['Total'] = $Total;
 			$this->data['PerPage'] = $config['per_page'];
 
@@ -55,6 +55,28 @@ class Report extends MY_Controller {
 			$this->data['Total'] = $Total;
 			$this->data['PerPage'] = $config['per_page'];
 			$this->render('Reports/booking_report_view','master');
+		}else{
+			redirect('Home');
+		}
+	}
+
+	public function Clients($offset = 0)
+	{
+		$this->data['PageHeader'] = 'Client Packages Booking Report';
+		$this->data['message'] = '';
+		$Search = array();
+		if($this->session->userdata('UserRole') === 'Admin') {
+			$this->load->library('pagination');
+
+			$Total = $this->PackageModel->GET_Row_Num_Clients_Report();
+			$config = $this->Config_Pagination('Report/Clients/',$Total);
+			$this->pagination->initialize($config);
+
+			$this->data['ClientsPackageList'] = $this->PackageModel->GET_Client_Report($Search,$config['per_page'],$offset);
+			
+			$this->data['Total'] = $Total;
+			$this->data['PerPage'] = $config['per_page'];
+			$this->render('Reports/Clients_report_view','master');
 		}else{
 			redirect('Home');
 		}

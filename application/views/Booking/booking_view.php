@@ -2,21 +2,25 @@
             <div class="col-sm-12">
                 <a class="btn btn-primary" href="/travel_agency/Booking/add">Add New</a>
             </div>
+            <div style="margin-bottom: 5px;" class="col-md-12 text-center">
+                    <?php  if( $notif = $this->session->flashdata('success')): ?>
+                    <div class="alert alert-dismissible alert-info">
+                      <button type="button" class="close" data-dismiss="alert">&times;</button>
+                      <strong><?= $notif ?></strong>
+                    </div>
+                    <?php endif; ?>
+                    <?php  if( $notif = $this->session->flashdata('error')): ?>
+                    <div class="alert alert-dismissible alert-danger">
+                      <button type="button" class="close" data-dismiss="alert">&times;</button>
+                      <strong><?= $notif ?></strong>
+                    </div>
+                    <?php endif; ?>
+                </div>
         </div>
         <div class="row">
             <div class="col-sm-12">
                 <table style="text-align: center;" class="table table-bordered table-hover table-responsive">
                     <thead>
-                        <?php  if( $notif = $this->session->flashdata('success')): ?>
-                        <tr>
-                            <td style="color: blue;" colspan="7"><strong><?= $notif ?></strong></td>
-                        </tr>
-                        <?php endif; ?>
-                        <?php  if( $notif = $this->session->flashdata('error')): ?>
-                        <tr>
-                            <td style="color: red;" colspan="7"><strong><?= $notif ?></strong></td>
-                        </tr>
-                        <?php endif; ?>
                         <tr>
                             <th>#</th>
                             <th>Client Name</th>
@@ -42,7 +46,7 @@
                             <td>
                                 <a href="<?= base_url('Booking/Details/'.$row['EntityNo']) ?>">Details</a><br/>
                                 <a href="<?= base_url('Booking/Edit/'.$row['EntityNo']) ?>">Edit</a><br/>
-                                <a href="<?= base_url('Booking/Remove/'.$row['EntityNo']) ?>">Cancle</a>
+                                <!-- <a href="<?= base_url('Booking/Remove/'.$row['EntityNo']) ?>">Cancle</a> -->
                             </td>
                         </tr>
                         <?php endforeach; ?>

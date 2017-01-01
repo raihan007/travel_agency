@@ -19,7 +19,7 @@ class LoginModel extends MY_Model {
 			if($dencryptPass === $Password)
 			{
 				$UserId = $result->row()->UserId;
-				$insert = $this->db->insert('access_history',array('EntityNo' => null,'UserId' => $UserId,'LoginTime' => 'default'));
+				$insert = $this->db->insert('access_history',array('EntityNo' => null,'UserId' => $UserId));
 
 				$LoginData = array(
 				    'UserId'   => $UserId,

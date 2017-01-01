@@ -164,8 +164,13 @@ class MY_Model extends CI_Model {
 
 	public function Get_Last_Login_By_ID($UserId = '')
 	{
-		$sql = "SELECT LoginTime FROM access_history WHERE UserId='$UserId' ORDER BY LoginTime DESC LIMIT 1";
-		$result = $this->db->query($sql);
+		$result = $this->db->select('LoginTime')
+	    				->where('UserId', $UserId)
+						->order_by('LoginTime','DESC')
+        				->limit(1)
+	    				->get('access_history');
+
+		//$result = $this->db->query($sql);
 
 		if($result->num_rows() === 1)
 		{

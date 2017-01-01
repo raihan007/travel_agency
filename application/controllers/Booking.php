@@ -83,17 +83,19 @@ class Booking extends MY_Controller {
 
 	public function Reservation($id = 0)
 	{	
-		$this->data['title'] = 'Reserved a Package';
+		$this->data['PageHeader'] = 'Reserved a Package';
 		$this->data['NextEntityNo'] = $this->PackageModel->Get_Next_Entity_No('packages_booking_info');
+		$UserId = $this->session->userdata('UserId');
 		if($this->session->userdata('UserRole') === 'Client') {
-			$this->data['Booking'] = $this->BookingModel->Get_By_ID($id);
-			$this->data['Package'] = $this->PackageModel->Get_Details($this->data['Booking']['PackageId']);
-			$this->data['Client'] = $this->ClientModel->Get_Details($this->data['Booking']['ClientId']);
+			//$this->data['Booking'] = $this->BookingModel->Get_By_ID($id);
+			$this->data['Package'] = $this->PackageModel->Get_Details($id);
+			$this->data['Client'] = $this->ClientModel->Get_Details($UserId);
 			$this->data['TotalCost'] = (1 * $this->data['Package']['Cost'])-($this->data['Package']['Discount']/100);
 			if(!$this->input->post('Reserved'))
 			{
 				$this->data['message'] = '';
-				$this->load->view('Booking/reservation_view', $this->data);
+				$this->render('Booking/reservation_view','client');
+				
 			}
 			else
 			{
@@ -117,7 +119,7 @@ class Booking extends MY_Controller {
 				else
 				{
 					$this->data['message'] = validation_errors();
-					$this->load->view('Booking/reservation_view', $this->data);
+					$this->render('Booking/reservation_view','client');
 				}
 			}
 		}else{
@@ -127,19 +129,25 @@ class Booking extends MY_Controller {
 
 	public function edit($id = 0)
 	{	
-		$this->data['title'] = 'Update Booking Details';
+		$this->data['PageHeader'] = 'Update Booking Details';
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->data['PackagesList'] = $this->PackageModel->Get_Packages_Title();
 			$this->data['PackagesList'] = array(' ' => '-- Select Package --') + $this->data['PackagesList'];
 			$this->data['ClientsList'] = $this->ClientModel->Get_Clients_Name();
 			$this->data['ClientsList'] = array(' ' => '-- Select Client --') + $this->data['ClientsList'];
 			$this->data['Booking'] = $this->BookingModel->Get_By_ID($id);
+
+			if(empty($this->data['Booking'])){
+				$this->session->set_flashdata('error', 'There are no informations for this booking!, please try again.');
+				redirect(base_url('Booking/AllBooking'));
+			}
+
 			$this->data['Package'] = $this->PackageModel->Get_Details($this->data['Booking']['PackageId']);
 			$BookingId = $this->data['Booking']['EntityNo'];
 			if(!$this->input->post('Update'))
 			{
 				$this->data['message'] = '';
-				$this->load->view('Booking/edit_view', $this->data);
+				$this->render('Booking/edit_view','master');
 			}
 			else
 			{
@@ -165,7 +173,7 @@ class Booking extends MY_Controller {
 				else
 				{
 					$this->data['message'] = validation_errors();
-					$this->load->view('Booking/edit_view', $this->data);
+					$this->render('Booking/edit_view','master');
 				}
 			}
 		}else{
@@ -175,12 +183,16 @@ class Booking extends MY_Controller {
 
 	public function Details($EntityNo)
 	{
-		$this->data['title'] = "Package Details";
+		$this->data['PageHeader'] = "Package Details";
 		if($this->session->userdata('UserRole') === 'Admin') {
 			$this->data['Booking'] = $this->BookingModel->Get_By_ID($EntityNo);
+			if(empty($this->data['Booking'])){
+				$this->session->set_flashdata('error', 'There are no informations for this booking!, please try again.');
+				redirect(base_url('Booking/AllBooking'));
+			}
 			$this->data['Client'] = $this->ClientModel->Get_Details($this->data['Booking']['ClientId']);
 			$this->data['Package'] = $this->PackageModel->Get_Details($this->data['Booking']['PackageId']);
-			$this->load->view('Booking/details_view',$this->data);
+			$this->render('Booking/details_view','master');
 		}else{
 			redirect('Home');
 		}

@@ -16,27 +16,29 @@ class Client extends MY_Controller {
 		echo date("Y-m-d H:i:s");
 	}
 
-	/*public function index($offset = 0)
+	public function index($offset = 0)
 	{
-		$this->data['title'] = 'Client Panel';
+		$this->data['PageHeader'] = 'Client Panel';
 		if($this->session->userdata('UserRole') === 'Client') {
 			$ClientInfo = $this->ClientModel->Get_By_ID($this->session->userdata('UserId'));
 
 			$this->load->library('pagination');
 			$Total = $this->PackageModel->Get_Total_Rows(array(), 'packages_info');
 			$config = $this->Config_Pagination('Client/index/',$Total);
-			$this->data['PackageList'] = $this->PackageModel->Get_Packages_List($config['per_page'],$offset);
+			$this->data['PackageList'] = $this->PackageModel->GET(array(),$config['per_page'],$offset);
 			$this->pagination->initialize($config);
 			$this->data['ClientId'] = $ClientInfo['UserId'];
 			$this->data['FullName'] = $ClientInfo['FirstName'].' '.$ClientInfo['LastName'];
 			$this->data['LastLoginTime'] = $this->ClientModel->Get_Last_Login_By_ID($this->session->userdata('UserId'));
+			$this->session->set_userdata('LastLoginTime', $this->data['LastLoginTime']);
+			$this->session->set_userdata('FullName', $this->data['FullName']);
 			$this->data['PerPage'] = $config['per_page'];
-			$this->load->view('Client/home_view',$this->data);
+			$this->render('Client/home_view','client');
 		}
 		else{
 			redirect('Home');
 		}
-	}*/
+	}
 
 	public function AllReservation($id = '')
 	{
@@ -55,11 +57,29 @@ class Client extends MY_Controller {
 		}
 	}
 
+	public function OwnReservation($id = '')
+	{
+		$this->data['PageHeader'] = 'Client All Reservation';
+		if($this->session->userdata('UserId')) {
+			$ClientInfo = $this->ClientModel->Get_By_ID($this->session->userdata('UserId'));
+
+			$this->data['ClientBookingList'] = $this->BookingModel->Get_Client_Booking_List($ClientInfo['UserId']);
+			$this->data['ClientId'] = $ClientInfo['UserId'];
+			$this->data['FullName'] = $ClientInfo['FirstName'].' '.$ClientInfo['LastName'];
+			$this->render('Client/client_reservation_view','client');
+			//$this->load->view('Client/client_reservation_view',$this->data);
+		}
+		else{
+			redirect('Home');
+		}
+	}
+
 	public function Profile(){
-		$this->data['title'] = "Profile";
+		$this->data['PageHeader'] = "Profile";
 		if($this->session->userdata('UserRole') === 'Client') {
 			$this->data['Employee'] = $this->AdminModel->Get_By_ID($this->session->userdata('UserId'));
-			$this->load->view('Client/profile_view',$this->data);
+			$this->render('Client/profile_view','client');
+			//$this->load->view('Client/profile_view',$this->data);
 		}
 		else{
 			redirect('Home');
@@ -67,9 +87,8 @@ class Client extends MY_Controller {
 	}
 
 	public function UpdateProfile($EntityNo = 0){
-		$this->data['title'] = "Profile";
+		$this->data['PageHeader'] = "Update Profile Info.";
 		if($this->session->userdata('UserRole') === 'Client') {
-			$this->data['title'] = 'Update Client Details';
 			$this->data['message'] = '';
 			$this->data['BloodGroupList'] = array(
 				' '   => 'Select Your Blood Group',
@@ -92,7 +111,8 @@ class Client extends MY_Controller {
 
 			if(!$this->input->post('Update'))
 			{
-				$this->load->view('Client/edit_profile_view',$this->data);
+				$this->render('Client/edit_profile_view','client');
+				//$this->load->view('Admin/edit_profile_view',$this->data);
 			}
 			else
 			{
@@ -142,11 +162,12 @@ class Client extends MY_Controller {
 					    	$this->session->set_flashdata('error', 'Some problems occured, please try again.');
 					}
 
-					redirect(base_url('Client/Profile/'.$EntityNo));
+					redirect(base_url('Profile'));
 				}
 
 				$this->data['message'] = validation_errors();
-				$this->load->view('Admin/edit_profile_view',$this->data);
+				$this->render('Client/edit_profile_view','client');
+				//$this->load->view('Admin/edit_profile_view',$this->data);
 			}
 		}else
 		{

@@ -26,5 +26,10 @@
                             </tr>
                         </tbody>
                     </table>
+                    <?php
+                        if($this->session->userdata('UserRole') === 'Client') {
+                            echo '<a class="btn btn-primary" href="/travel_agency/Client/Index">Home</a>';
+                        }
+                    ?>
                 </div>
             </div>
